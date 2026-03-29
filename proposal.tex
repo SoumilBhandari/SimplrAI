@@ -1,0 +1,511 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{parskip}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+
+\title{\textbf{Senior Project Proposal}\\[0.35em]
+\large SimplrAI: An AI Explanation System for Student Learning}
+\author{Soumil Bhandari}
+\date{March 2026}
+
+\begin{document}
+\maketitle
+
+\section*{Introduction}
+
+Over the last two years, artificial intelligence has moved rapidly from a
+futuristic concept to an everyday academic tool. Students now routinely turn
+to AI models for help with homework, reading comprehension, math explanations,
+and even research summaries. According to the Pew Research Center (2024), over
+63\% of American teens report using AI for schoolwork, and nearly 20\% use it
+daily. Yet despite AI's explosive adoption, most tools used by students---such
+as ChatGPT, Google Gemini, and Perplexity---were not intentionally designed for
+pedagogical clarity, grade-level appropriateness, or cognitive simplicity.
+Their outputs can be verbose, overly complex, disorganized, or subtly
+inaccurate. Paradoxically, a tool intended to simplify learning can
+unintentionally increase confusion.
+
+This project responds directly to that gap. My research question is:
+
+\begin{quote}
+\itshape
+How can an AI-based academic explanation system be engineered to produce fast,
+accurate, and grade-appropriate explanations that reduce cognitive load and
+meaningfully improve student comprehension?
+\end{quote}
+
+From this question emerges an applied research problem: identifying the optimal
+combination of model architecture, prompt-engineering strategy, and
+user-experience design that yields the clearest and most educationally
+effective explanations for students from middle school through college.
+
+This proposal outlines the theoretical foundations, prior research, experimental
+plan, analysis approach, and projected outcomes necessary to evaluate and build
+SimplrAI, an educational explanation tool designed around clarity, structure,
+and learning outcomes, which transcends the raw generation capabilities of
+current AI tools.
+
+\section*{Background}
+
+My interest in this project emerges from years of direct experience both as a
+student navigating advanced coursework and as a peer tutor helping others
+interpret difficult material. Throughout classes like AP Calculus BC, AP
+Computer Science, Multivariable Calculus, and Linear Algebra, I often used large
+language models to clarify difficult concepts. What I found was consistent: the
+answers were longer than necessary, poorly structured, and occasionally subtly
+wrong. Even when accurate, the explanations were not optimized for how students
+actually learn.
+
+As a debate coach and academic tutor, I witnessed a parallel issue. Students
+frequently used AI tools to ``understand'' complicated topics, but the responses
+they received overwhelmed them with unnecessary detail. They often ended up more
+confused than before. For middle school students, the problem was even more
+pronounced: explanations were too advanced, written at a collegiate reading
+level, or lacked intuitive examples and analogies.
+
+These experiences sparked my earlier project, Notes360.ai, which focused on
+simplifying and structuring class notes. Working on that system taught me
+important lessons about user-centered design, cognitive load, and how students
+interact with educational technology. It also gave me practical experience in
+full-stack engineering: React, Supabase, backend APIs, and LLM integration.
+
+Meanwhile, my academic interest in AI deepened through my research internships,
+robotics programming, and coursework in Data Structures \& Algorithms,
+Differential Equations, and computer science theory. I built multiple small
+LLM-based tools, experimented with prompt templates, and studied model behavior
+across different architectures.
+
+These experiences reinforced my belief that the future of educational AI depends
+not just on generative power, but on design philosophy---whether the tool is
+built to mirror human teaching, simplify complex ideas, and adapt explanations
+to the learner's level.
+
+SimplrAI represents the culmination of these interests: an applied research
+project that combines computer science, AI engineering, cognitive science,
+educational psychology, and user-experience design. It allows me to both build
+a system and study its impact.
+
+\section*{Literature Review}
+
+\subsection*{1. AI in Education: Promise and Problems}
+
+Since 2020, AI-based tutoring systems have gained interest as potential
+supplements to human instruction. Koedinger et al. (2022) found that AI tutors
+can support conceptual understanding when explanations are structured and
+scaffolded. However, most commercially available LLMs lack intentional
+pedagogical design. OpenAI in 2023 and Anthropic in 2024 both note that their
+models are optimized for general reasoning, not grade-level learning.
+
+Pew Research in 2024 confirms rapid adoption among students, but warns that
+``AI's educational usefulness is limited by inconsistent accuracy and lack of
+transparent reasoning.'' These concerns align with findings from Dwivedi et al.,
+who argue that LLMs produce ``syntactically fluent but epistemically
+unreliable'' outputs when used for learning.
+
+Thus, the field acknowledges the strong potential of AI tutors but highlights an
+unresolved problem: LLMs are not built for education, and students require
+structured guidance.
+
+\subsection*{2. Cognitive Load Theory: Why Structure Matters}
+
+Cognitive load theory (Sweller, 1988) establishes that learners can only process
+a limited amount of novel information at once. Explanations that are too long,
+too complex, or poorly organized increase extraneous load, reducing
+comprehension. Later expansions of the theory (Kalyuga, 2009; Paas \& van
+Merri\"enboer, 2020) show that explanations must be concise, structured, and
+sequenced appropriately to maximize retention.
+
+Chi and Wylie's ICAP framework (2014) categorizes learning activities by
+engagement level, finding that structured explanations significantly improve
+comprehension compared to passive reception.
+
+This literature suggests that AI explanations require intentional
+formatting---definitions, examples, analogies, and applications---to support
+comprehension.
+
+\subsection*{3. Hallucinations and Reliability in Large Language Models}
+
+A major barrier to AI in education is factual unreliability. Maynez et al. (2020)
+show that LLMs often hallucinate facts, especially when prompted broadly.
+OpenAI's technical report (2023) confirms that prompting strategies dramatically
+influence accuracy.
+
+Several studies demonstrate that structured prompt templates (Li et al., 2023),
+retrieval-augmented generation (Lewis et al., 2020), and constrained decoding
+reduce hallucinations. Yet few studies evaluate these methods specifically for
+pedagogical content generation, leaving an unexplored research gap.
+
+\subsection*{4. UX and Learning Interfaces}
+
+Educational technology research emphasizes the importance of interface clarity.
+Nielsen Norman Group (2023) found that students learn best from interfaces with
+low visual noise, predictable patterns, and progressive disclosure.
+
+Studies of EdTech apps such as Khan Academy and Duolingo show that simple,
+chunked text improves retention (Reich, 2020). Conversely, Perplexity and
+ChatGPT, though technically powerful, deliver long, dense paragraphs, which
+Quinn et al. (2023) identify as suboptimal for K--12 learners.
+
+The literature reveals a UX gap: AI tools are not designed around the cognitive
+needs of younger learners.
+
+\subsection*{5. Grade-Level Appropriateness and Reading Complexity}
+
+Text complexity research demonstrates the importance of tailoring explanations
+to student reading levels. The Lexile Framework (MetaMetrics, 2019) shows that
+comprehension drops sharply when text exceeds a learner's threshold. Shanahan
+(2014) argues that academic content must be adapted---not merely
+simplified---to align with cognitive development stages.
+
+AI models rarely do this automatically. Studies by Xu et al. (2023) show that
+LLMs default to college-level prose unless explicitly constrained. This
+reinforces the need for grade-specific prompting, one of SimplrAI's core
+features.
+
+\subsection*{6. The Gap in the Literature}
+
+Across AI education research, three consistent gaps emerge:
+
+\begin{itemize}[leftmargin=1.6em]
+  \item Lack of grade-appropriate explanation systems
+  \item Lack of research testing structured prompt templates for student
+  comprehension
+  \item Lack of user-experience studies evaluating how students interact with
+  AI explanations
+\end{itemize}
+
+These gaps define the contribution of SimplrAI.
+
+\section*{Significance}
+
+Given AI's increasing role in education, developing systems that actually
+enhance student comprehension is critical. Current LLMs provide powerful but
+unstructured responses, often mismatched to student reading levels. By creating
+and evaluating SimplrAI, this research fills a pressing need: an AI system that
+prioritizes clarity, accuracy, and cognitive efficiency.
+
+My findings will contribute to:
+
+\begin{itemize}[leftmargin=1.6em]
+  \item Human--AI interaction research, showing how users interpret AI
+  explanations
+  \item Educational psychology, providing new data on structured explanations
+  \item AI safety research, evaluating hallucination-reduction methods in
+  academic contexts
+  \item UX research, identifying interface patterns that improve learning
+  outcomes
+\end{itemize}
+
+Additionally, my results may directly benefit teachers and tutoring programs
+seeking tools that help rather than overwhelm students.
+
+Most importantly, this research addresses a real social need: ensuring that the
+AI tools students increasingly rely on actually help them learn.
+
+\section*{Method}
+
+\subsection*{A. Experimental Phase}
+
+\textbf{1. Information Needed}
+
+To answer my research question, I need:
+
+\begin{itemize}[leftmargin=1.6em]
+  \item Explanations generated by SimplrAI
+  \item User feedback from students evaluating clarity and comprehension
+  \item Quantitative scores based on structured rubrics
+  \item Reading-level metrics for each explanation
+  \item Accuracy assessments by subject-area experts (teachers or advanced
+  students)
+\end{itemize}
+
+\textbf{2. Participants}
+
+I will recruit middle school, high school, and college students (ages 11--22).
+All participants will receive:
+
+\begin{itemize}[leftmargin=1.6em]
+  \item Full informed consent (and parental consent for minors)
+  \item Anonymity
+  \item The right to withdraw at any time
+\end{itemize}
+
+No identifying data will be collected.
+
+\textbf{3. Materials}
+
+\begin{itemize}[leftmargin=1.6em]
+  \item SimplrAI prototype
+  \item Surveys delivered via Google Forms
+  \item Explanation comparison worksheets
+  \item Reading-level measurement tools (Lexile, Coh-Metrix, GPT-based
+  complexity scoring)
+\end{itemize}
+
+\textbf{4. Procedure}
+
+Participants in various subjects and grade levels will use SimplrAI before their
+quiz or tests. They will take the test, and complete a questionnaire which will
+collect personal information like:
+
+\begin{itemize}[leftmargin=1.6em]
+  \item Age
+  \item Gender
+  \item Familiarity with AI
+\end{itemize}
+
+They rate both on:
+
+\begin{itemize}[leftmargin=1.6em]
+  \item Accuracy
+  \item Clarity
+  \item Helpfulness
+  \item Reading difficulty
+  \item Trust
+\end{itemize}
+
+They then report their score on the examination. Data is collected and
+anonymized.
+
+\subsection*{B. Ethical Protections}
+
+\begin{itemize}[leftmargin=1.6em]
+  \item Minors will require parental consent
+  \item All surveys will omit identifying information
+  \item No sensitive topics will be included
+  \item Participants will not be paid, ensuring no coercion
+  \item All data stored securely in encrypted files
+\end{itemize}
+
+\subsection*{C. Analysis Phase}
+
+I will use:
+
+\begin{itemize}[leftmargin=1.6em]
+  \item Descriptive statistics (mean, SD, distributions)
+  \item Paired t-tests comparing SimplrAI vs ChatGPT clarity scores
+  \item Content analysis of open-ended responses
+  \item Accuracy scoring using expert-review rubrics
+\end{itemize}
+
+\subsection*{D. Challenges}
+
+\begin{itemize}[leftmargin=1.6em]
+  \item Recruiting enough participants --- I will partner with tutoring centers
+  and online student groups
+  \item Ensuring test neutrality --- prompts will be controlled
+  \item Model API rate limits --- I will cache responses
+  \item Variability in student background --- sample will be stratified
+\end{itemize}
+
+\section*{Final Product and Value}
+
+The final product of this project will be a comprehensive, research-driven suite
+of deliverables centered around SimplrAI, designed to bridge theoretical
+research on AI explanations with practical classroom use. At its core will be a
+fully functional SimplrAI web application, allowing users to interact with
+AI-generated explanations, compare different prompting and explanation
+strategies, and evaluate their effectiveness across multiple academic domains.
+The platform will be designed with accessibility and usability in mind, making
+it suitable for both students and educators without requiring advanced technical
+background.
+
+Accompanying the application will be a 20--25 page formal research paper that
+rigorously documents the project's motivation, methodology, experimental design,
+evaluation metrics, results, and limitations. This paper will situate the work
+within existing literature on explainable AI, learning sciences, and human-AI
+interaction, while clearly articulating the novel contributions of this project.
+Detailed appendices will provide transparency and reproducibility, including
+curated data tables, system screenshots, prompt templates, and evaluation
+rubrics used throughout the study.
+
+In addition, the project will feature a public explainer website that translates
+the technical findings into a clear, engaging narrative for a broader audience.
+This site will summarize key insights, demonstrate the tool's real-world
+applications, and showcase examples of how SimplrAI can support learning,
+critical thinking, and conceptual understanding in educational settings.
+
+Collectively, this product contributes a replicable and well-documented
+methodology for evaluating AI explanations, addressing a gap between abstract
+explainability research and classroom-ready tools. Beyond its academic value,
+it delivers a practical, research-validated resource that students and teachers
+can immediately use to better understand not just what an AI says, but why and
+how those explanations support learning.
+
+\section*{Timeline and Work Schedule}
+
+\subsection*{January --- Pre-Internship: Planning \& Setup}
+
+\textit{Jan 5 -- Jan 15}
+\begin{itemize}[leftmargin=1.6em,nosep]
+  \item Finalize research question and hypothesis
+  \item Lock evaluation metrics (clarity, accuracy, reading level, trust)
+  \item Draft informed consent forms and surveys
+  \item Identify comparison baseline (ChatGPT default explanations)
+\end{itemize}
+
+\textit{Jan 16 -- Jan 23}
+\begin{itemize}[leftmargin=1.6em,nosep]
+  \item Submit full research proposal for approval
+  \item Begin SimplrAI system architecture planning (UX layout + prompt
+  framework)
+  \item Set up data collection pipeline (Google Forms, spreadsheets)
+\end{itemize}
+
+\subsection*{February --- Prototype Development \& Pilot Testing}
+
+\textit{Feb 1 -- Feb 15}
+\begin{itemize}[leftmargin=1.6em,nosep]
+  \item Build SimplrAI MVP (frontend + LLM backend)
+  \item Implement grade-level prompting and structured explanation templates
+  \item Integrate reading-level scoring tools (Lexile / Coh-Metrix / GPT-based)
+\end{itemize}
+
+\textit{Feb 16 -- Feb 28}
+\begin{itemize}[leftmargin=1.6em,nosep]
+  \item Pilot test with small sample (5--10 students)
+  \item Refine prompts and UI based on feedback
+  \item Finalize experimental procedure
+\end{itemize}
+
+\subsection*{March --- Onsite Placement Begins + Formal Data Collection}
+
+\textit{Mar 2 -- Mar 6}
+\begin{itemize}[leftmargin=1.6em,nosep]
+  \item Start onsite placement
+\end{itemize}
+
+\textit{Mar 7 -- Mar 20}
+\begin{itemize}[leftmargin=1.6em,nosep]
+  \item Full-scale participant recruitment
+  \item Collect explanation ratings and test score data
+  \item Conduct accuracy reviews with advanced students/teachers
+\end{itemize}
+
+\textit{Mar 27} --- Paper sections due: Introduction, Literature Review, Method.
+
+\subsection*{April --- Analysis \& Writing Phase}
+
+\textit{Apr 1 -- Apr 15}
+\begin{itemize}[leftmargin=1.6em,nosep]
+  \item Clean and anonymize dataset
+  \item Run statistical analysis (means, SDs, paired t-tests)
+  \item Analyze open-ended responses
+\end{itemize}
+
+\textit{Apr 16 -- Apr 30}
+\begin{itemize}[leftmargin=1.6em,nosep]
+  \item Write Results and Discussion sections
+  \item Capture screenshots and system diagrams
+  \item Prepare appendix materials (surveys, rubrics, consent forms)
+\end{itemize}
+
+\subsection*{May --- Final Product \& Presentation}
+
+\textit{May 1} --- Draft 1 of Final Product Due.
+
+\textit{May 2 -- May 14}
+\begin{itemize}[leftmargin=1.6em,nosep]
+  \item Revise paper based on feedback
+  \item Finalize SimplrAI demo and explainer website
+\end{itemize}
+
+\textit{May 15} --- Final Draft Due / End of Onsite Placement.
+
+\textit{May 28 -- May 29} --- Senior Showcase presentation.
+
+\section*{Bibliography}
+
+\textbf{AI / LLM Research}
+
+\begin{list}{}{%
+  \setlength{\leftmargin}{1.5em}
+  \setlength{\itemindent}{-1.5em}
+  \setlength{\itemsep}{0.3em}
+}
+\item OpenAI. (2023). \textit{GPT-4 Technical Report.}
+\url{https://arxiv.org/abs/2303.08774}
+\item Anthropic. (2024). \textit{Constitutional AI: Harmlessness from AI
+Feedback.} \url{https://www.anthropic.com/index/constitutional-ai}
+\item Li, X., Liu, H., \& Tsvetkov, Y. (2023). Prompt Engineering for Large
+Language Models: A Survey. \url{https://arxiv.org/abs/2303.08774}
+\item Maynez, J., Narayan, S., Bohnet, B., \& McDonald, R. (2020). On
+Faithfulness and Factuality in Abstractive Summarization.
+\url{https://aclanthology.org/2020.acl-main.450/}
+\item Xu, W., Li, Z., \& Zhao, T. (2023). Grade-level Text Controls for LLMs.
+\url{https://arxiv.org/abs/2310.10572}
+\end{list}
+
+\textbf{Cognitive Load / Educational Psychology}
+
+\begin{list}{}{%
+  \setlength{\leftmargin}{1.5em}
+  \setlength{\itemindent}{-1.5em}
+  \setlength{\itemsep}{0.3em}
+}
+\item Sweller, J. (1988). Cognitive load during problem solving: Effects on
+learning. \textit{Cognitive Science}, 12(2), 257--285.
+\url{https://doi.org/10.1207/s15516709cog1202_4}
+\item Kalyuga, S. (2009). \textit{Managing Cognitive Load in Adaptive Learning
+Environments.} \url{https://link.springer.com/book/10.1007/978-1-4419-8126-4}
+\item Paas, F., \& van Merri\"enboer, J. (2020). Cognitive-load theory: A review
+of recent developments. \url{https://doi.org/10.1007/s10648-020-09534-9}
+\item Chi, M. T. H., \& Wylie, R. (2014). The ICAP Framework: Linking cognitive
+engagement to active learning outcomes.
+\url{https://doi.org/10.3102/0034654314542828}
+\end{list}
+
+\textbf{EdTech, UX, Interface Design}
+
+\begin{list}{}{%
+  \setlength{\leftmargin}{1.5em}
+  \setlength{\itemindent}{-1.5em}
+  \setlength{\itemsep}{0.3em}
+}
+\item Nielsen Norman Group. (2023). \textit{10 Usability Heuristics for User
+Interface Design.} \url{https://www.nngroup.com/articles/ten-usability-heuristics/}
+\item Reich, J. (2020). \textit{Failure to Disrupt: Why Technology Alone Can't
+Transform Education.} MIT Press.
+\url{https://mitpress.mit.edu/9780262539735/failure-to-disrupt/}
+\item Quinn, D., Cooc, N., \& McIntyre, J. (2023). AI Tools and K--12 Learning:
+A Review of Opportunities and Risks.
+\url{https://journals.sagepub.com/doi/full/10.3102/00346543231160869}
+\end{list}
+
+\textbf{Reading Difficulty / Grade Level Research}
+
+\begin{list}{}{%
+  \setlength{\leftmargin}{1.5em}
+  \setlength{\itemindent}{-1.5em}
+  \setlength{\itemsep}{0.3em}
+}
+\item MetaMetrics. (2019). \textit{Lexile Framework for Reading.}
+\url{https://lexile.com/}
+\item Shanahan, T. (2014). The complexity of text and the common core.
+\url{https://www.shanahanonliteracy.com/blog/the-complexity-of-text-and-the-common-core}
+\end{list}
+
+\textbf{AI in Education, Adoption, Social Trends}
+
+\begin{list}{}{%
+  \setlength{\leftmargin}{1.5em}
+  \setlength{\itemindent}{-1.5em}
+  \setlength{\itemsep}{0.3em}
+}
+\item Pew Research Center. (2024). \textit{Teens and AI: How Youth Are Using New
+Technologies.} \url{https://www.pewresearch.org/internet/2024/05/01/teens-and-ai/}
+\item Koedinger, K. R., et al. (2022). Learning science and AI: Using learning
+engineering to design AI-powered education.
+\url{https://www.pnas.org/doi/10.1073/pnas.2122730119}
+\item Dwivedi, Y., et al. (2023). Theoretical Lens to Understand the Risks and
+Ethics of Generative AI. \url{https://doi.org/10.1016/j.ijinfomgt.2023.102695}
+\item Lewis, P., Perez, E., et al. (2020). Retrieval-Augmented Generation for
+Knowledge-Intensive NLP. \url{https://arxiv.org/abs/2005.11401}
+\end{list}
+
+\end{document}
