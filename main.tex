@@ -6,8 +6,6 @@
 \usepackage{parskip}
 \usepackage{hyperref}
 
-% still figuring out what packages i actually need
-
 \title{SimplrAI: Designing a Grade-Appropriate AI Explanation System}
 \author{Soumil Bhandari}
 \date{April 2026}
@@ -15,7 +13,7 @@
 \begin{document}
 \maketitle
 
-% TODO: add abstract once i have data to put in it
+% TODO: abstract
 
 \section{Introduction}
 
@@ -23,19 +21,30 @@ Over the past two years, artificial intelligence has moved from a futuristic
 concept to a core academic tool. According to the Pew Research Center (2024),
 more than 63\% of American teenagers report using AI for schoolwork, and nearly
 one in five uses it daily. The tools they reach for --- ChatGPT, Gemini,
-Perplexity --- were built as general-purpose conversational agents, optimized
-for breadth and fluency. None were designed for the specific cognitive needs of
-a middle schooler trying to understand the chain rule for the first time.
+Perplexity --- were built as general-purpose conversational agents. None were
+designed for the specific cognitive needs of a middle schooler trying to
+understand the chain rule for the first time.
 
-% i want to talk about my own experience here -- tutoring, notes360, etc.
-% also need to connect to the research question
+I experienced this problem directly. In my own coursework (AP Calculus BC,
+Multivariable Calculus, Linear Algebra, AP CS) and while tutoring younger
+students, I kept seeing the same thing: a student would ask a chatbot to explain
+mitosis or derivative notation, the model would produce a fluent but dense
+six-paragraph response, the student would skim it, decide they were still
+confused, and ask for it to be simpler. The next response was usually longer.
+This happened over and over again. It's a design problem, not a capability
+problem --- the model has the knowledge, it just doesn't know how to teach.
 
-I experienced this problem directly. In my own coursework and while tutoring
-younger students, I kept seeing the same thing: the AI would give a long, dense
-response that technically answered the question but didn't actually help the
-student understand. The student would be more confused than before.
+% okay I keep rambling here. Need to tighten this up.
+% The key point: LLMs aren't designed for pedagogy.
+% Also need to mention Notes360.ai experience somewhere
 
-This project asks whether we can do better. My research question is:
+My earlier project Notes360.ai taught me a lot about how students actually
+interact with AI tools and what they need from explanations. That experience,
+combined with my tutoring work, convinced me that the bottleneck is not model
+capability but design philosophy. SimplrAI is my attempt to get the design
+right.
+
+My research question is:
 
 \begin{quote}\itshape
 How can an AI-based academic explanation system be engineered to produce fast,
@@ -43,9 +52,11 @@ accurate, and grade-appropriate explanations that reduce cognitive load and
 meaningfully improve student comprehension?
 \end{quote}
 
-To answer it, I built SimplrAI. More on the system in Section 3.
+% Section roadmap -- come back to this after i know what sections ill have
+% probably: intro, lit review, methodology, results, discussion, limitations
 
-% TODO: roadmap paragraph, list of sections
-% TODO: need to mention the three layers somewhere in intro
+To answer it, I designed and built SimplrAI, an explanation system that wraps
+a frontier LLM in three deliberate layers. More detail in the methodology
+section.
 
 \end{document}
