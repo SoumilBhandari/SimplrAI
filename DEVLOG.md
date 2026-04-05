@@ -18,3 +18,20 @@ TODO eventually: figure out biblatex for the actual paper later.
 
 ---
 
+## Apr 4 — 11:30pm
+
+rewrote the intro three different times tonight.
+
+1. "AI in education is at an inflection point" — too generic, sounds like every
+   other AI paper from 2023
+2. opened with the chain-rule story but it came out too cute, mentor will hate it
+3. started with the Pew stat but then it just turns into a stats dump
+
+nothing works. brain is fried. saving this version because at least it's not
+the worst one. sleeping.
+
+if you're reading this Soumil, the answer is probably to just write 4 sentences
+and stop overthinking it. the intro is not where this paper lives or dies.
+
+---
+
