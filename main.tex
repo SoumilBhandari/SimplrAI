@@ -4,45 +4,65 @@
 \usepackage[T1]{fontenc}
 \usepackage[margin=1in]{geometry}
 \usepackage{parskip}
+\usepackage{enumitem}
 \usepackage{hyperref}
 
-\title{Engineering for Clarity: Designing SimplrAI,
-a Grade-Appropriate AI Explanation System}
+\title{Engineering for Clarity: Designing SimplrAI,\\
+a Grade-Appropriate AI Explanation System for Student Learning}
 \author{Soumil Bhandari \\ BASIS Independent McLean}
 \date{April 2026}
 
 \begin{document}
 \maketitle
 
-% starting fresh with a clearer title and structure
-% old intro was too rambly -- mentor agreed
+% TODO: abstract
 
 \section{Introduction}
 
-% PLACEHOLDER -- rewriting this cleanly tomorrow
+Over the past two years, artificial intelligence has moved from a futuristic
+concept to a core academic tool. According to the Pew Research Center (2024),
+more than 63\% of American teenagers report using AI for schoolwork, and nearly
+one in five uses it daily. The tools they reach for --- ChatGPT, Gemini,
+Perplexity --- were built as general-purpose conversational agents, optimized
+for breadth, fluency, and general reasoning. None were designed for the specific
+cognitive needs of a thirteen-year-old trying to understand the chain rule for
+the first time.
 
-\section{Literature Review}
+In my own coursework, and during the year I spent tutoring middle- and
+high-school students, I encountered the same pattern repeatedly. A student would
+ask a chatbot to explain mitosis, derivative notation, or the causes of the
+French Revolution. The model would produce a fluent, dense, six-paragraph
+response written somewhere between a college textbook and an encyclopedia
+article. The student would skim it, decide they were still confused, and ask
+for it to be simpler. The next response would often be longer than the first.
 
-% TODO
+This is a design problem, not a capability problem. Frontier LLMs already have
+the underlying knowledge to teach high-school content; what they lack is a
+pedagogical scaffold --- structured output, age-aware reading level, intentional
+hallucination control, and an interface that respects what cognitive scientists
+have known for forty years about working-memory limits (Sweller, 1988).
 
-\section{Methodology}
+This project asks:
 
-% TODO
+\begin{quote}\itshape
+How can an AI-based academic explanation system be engineered to produce fast,
+accurate, and grade-appropriate explanations that reduce cognitive load and
+meaningfully improve student comprehension?
+\end{quote}
 
-\section{Results}
+To answer it, I designed and built SimplrAI, an explanation system for students
+from sixth grade through the first years of college. SimplrAI wraps a frontier
+LLM in three deliberate layers:
+\begin{enumerate}[leftmargin=1.4em]
+  \item A \textbf{structured prompting layer} that enforces a
+  definition--example--analogy--application output schema with lightweight
+  retrieval grounding.
+  \item A \textbf{grade-level adaptation layer} that rewrites vocabulary and
+  sentence complexity to match the target Lexile band.
+  \item A \textbf{minimal user interface} built on progressive-disclosure
+  principles.
+\end{enumerate}
 
-% TODO
-
-\section{Discussion}
-
-% TODO
-
-\section{Limitations and Future Work}
-
-% TODO
-
-\section{Conclusion}
-
-% TODO
+% TODO: section roadmap paragraph -- do after lit review is done
 
 \end{document}
