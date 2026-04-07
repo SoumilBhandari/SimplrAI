@@ -15,15 +15,13 @@ a Grade-Appropriate AI Explanation System for Student Learning}
 \begin{document}
 \maketitle
 
-% TODO: abstract
-
 \section{Introduction}
 
 Over the past two years, artificial intelligence has moved from a futuristic
 concept to a core academic tool. According to the Pew Research Center (2024),
 more than 63\% of American teenagers report using AI for schoolwork, and nearly
-one in five uses it daily. The tools they reach for --- ChatGPT, Gemini,
-Perplexity --- were built as general-purpose conversational agents, optimized
+one in five uses it daily. The tools they reach for---ChatGPT, Gemini,
+Perplexity---were built as general-purpose conversational agents, optimized
 for breadth, fluency, and general reasoning. None were designed for the specific
 cognitive needs of a thirteen-year-old trying to understand the chain rule for
 the first time.
@@ -38,9 +36,10 @@ for it to be simpler. The next response would often be longer than the first.
 
 This is a design problem, not a capability problem. Frontier LLMs already have
 the underlying knowledge to teach high-school content; what they lack is a
-pedagogical scaffold --- structured output, age-aware reading level, intentional
+pedagogical scaffold---structured output, age-aware reading level, intentional
 hallucination control, and an interface that respects what cognitive scientists
-have known for forty years about working-memory limits (Sweller, 1988).
+have known for forty years about working-memory limits (Sweller, 1988;
+Paas \& van Merri\"enboer, 2020).
 
 This project asks:
 
@@ -63,6 +62,50 @@ LLM in three deliberate layers:
   principles.
 \end{enumerate}
 
-% TODO: section roadmap paragraph -- do after lit review is done
+Section 2 surveys the relevant literature. Section 3 describes methodology.
+Sections 4--6 present results, discussion, and limitations.
+
+\section{Literature Review}
+
+The literature relevant to SimplrAI spans four fields: AI tutoring systems,
+cognitive load theory, hallucination and factual reliability in LLMs, and
+reading-level adaptation.
+
+\subsection{AI tutoring systems}
+
+Intelligent tutoring systems have existed for decades, but the rise of LLMs has
+reopened the question of whether general-purpose conversational agents can serve
+as tutors. Koedinger et al.\ (2022) found that AI tutors can support conceptual
+understanding when their explanations are appropriately structured and
+scaffolded. However, the same body of work consistently notes that commercially
+available chatbots are not designed for instruction. OpenAI's GPT-4 technical
+report (2023) and Anthropic's writing on Constitutional AI (2024) both describe
+their models as optimized for general helpfulness rather than pedagogical
+clarity. Pew Research (2024) confirmed rapid adoption of these tools by students
+but warned that AI's educational usefulness is limited by inconsistent accuracy
+and a lack of transparent reasoning. Dwivedi et al.\ (2023) argue that LLMs
+produce outputs that are syntactically fluent but epistemically unreliable when
+used for learning.
+
+\subsection{Cognitive load theory}
+
+The classical framework here is cognitive load theory (Sweller, 1988), which
+holds that working memory can only process a limited amount of novel information
+at once. Explanations that are long, dense, or poorly organized increase
+extraneous load---cognitive effort that does not contribute to learning. Later
+refinements (Kalyuga, 2009; Paas \& van Merri\"enboer, 2020) emphasize that
+effective explanations are concise, sequenced, and chunked. Chi and Wylie's
+ICAP framework (2014) extends this with a taxonomy of learner engagement,
+finding that explanations which prompt active construction outperform passive
+ones.
+
+For an AI explanation system, format matters. An explanation segmented into
+definition, worked example, analogy, and application is structurally easier to
+encode than a free-flowing paragraph. SimplrAI's output schema is designed
+around precisely this finding.
+
+% TODO: hallucination section
+% TODO: reading level / UX section
+% TODO: synthesis / gaps
 
 \end{document}
