@@ -35,3 +35,19 @@ and stop overthinking it. the intro is not where this paper lives or dies.
 
 ---
 
+## Apr 7 — 11:55pm
+
+got the AI tutoring + cognitive load subsections in. they're decent. need to
+write:
+- hallucination / factual reliability
+- reading level + UX
+- the synthesis/gaps paragraph
+
+read like 14 papers tonight, half my notes are unreadable because i was
+writing them while watching a youtube video. that was a mistake.
+
+going to bed. ill finish this tomorrow after debate practice. or saturday. or
+sunday. ugh.
+
+---
+
