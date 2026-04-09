@@ -51,3 +51,21 @@ sunday. ugh.
 
 ---
 
+## Apr 9 — 2:30am
+
+i hate latex. i hate latex. i hate latex.
+
+tried:
+1. moving \usepackage{hyperref} to the end of the preamble (didn't help)
+2. uninstalling and reinstalling MiKTeX (took 45 min, didn't help)
+3. \usepackage[colorlinks=false]{hyperref} (didn't help)
+4. nuking aux/log files and recompiling (didn't help)
+
+the error is `Option clash for package hyperref` but i'm not loading it twice
+anywhere that i can see. checked every \usepackage line three times.
+
+going to sleep. if i don't figure this out tomorrow im just submitting without
+clickable links and dealing with it later.
+
+---
+
