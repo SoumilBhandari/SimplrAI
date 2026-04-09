@@ -5,7 +5,9 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{parskip}
 \usepackage{enumitem}
-\usepackage{hyperref}
+% \usepackage{hyperref}  % BROKE EVERYTHING -- commenting out until i figure it out
+% the error was: "Option clash for package hyperref" -- no idea why
+% tried moving it around, still broken. leaving it out for now
 
 \title{Engineering for Clarity: Designing SimplrAI,\\
 a Grade-Appropriate AI Explanation System for Student Learning}
@@ -73,39 +75,44 @@ reading-level adaptation.
 
 \subsection{AI tutoring systems}
 
-Intelligent tutoring systems have existed for decades, but the rise of LLMs has
-reopened the question of whether general-purpose conversational agents can serve
-as tutors. Koedinger et al.\ (2022) found that AI tutors can support conceptual
+Koedinger et al.\ (2022) found that AI tutors can support conceptual
 understanding when their explanations are appropriately structured and
-scaffolded. However, the same body of work consistently notes that commercially
-available chatbots are not designed for instruction. OpenAI's GPT-4 technical
-report (2023) and Anthropic's writing on Constitutional AI (2024) both describe
-their models as optimized for general helpfulness rather than pedagogical
-clarity. Pew Research (2024) confirmed rapid adoption of these tools by students
-but warned that AI's educational usefulness is limited by inconsistent accuracy
-and a lack of transparent reasoning. Dwivedi et al.\ (2023) argue that LLMs
-produce outputs that are syntactically fluent but epistemically unreliable when
-used for learning.
+scaffolded. OpenAI (2023) and Anthropic (2024) both describe their models as
+optimized for general helpfulness rather than pedagogical clarity. Pew Research
+(2024) confirmed rapid adoption but warned that educational usefulness is limited
+by inconsistent accuracy. Dwivedi et al.\ (2023) argue that LLMs produce outputs
+that are syntactically fluent but epistemically unreliable.
 
 \subsection{Cognitive load theory}
 
-The classical framework here is cognitive load theory (Sweller, 1988), which
-holds that working memory can only process a limited amount of novel information
-at once. Explanations that are long, dense, or poorly organized increase
-extraneous load---cognitive effort that does not contribute to learning. Later
-refinements (Kalyuga, 2009; Paas \& van Merri\"enboer, 2020) emphasize that
-effective explanations are concise, sequenced, and chunked. Chi and Wylie's
-ICAP framework (2014) extends this with a taxonomy of learner engagement,
-finding that explanations which prompt active construction outperform passive
-ones.
+Cognitive load theory (Sweller, 1988) holds that working memory can only process
+a limited amount of novel information at once. Long, dense, or disorganized
+explanations increase extraneous load. Later refinements (Kalyuga, 2009; Paas
+\& van Merri\"enboer, 2020) emphasize concise, sequenced, chunked explanations.
+Chi and Wylie's ICAP framework (2014) finds that explanations prompting active
+construction outperform passive ones. SimplrAI's output schema addresses this.
 
-For an AI explanation system, format matters. An explanation segmented into
-definition, worked example, analogy, and application is structurally easier to
-encode than a free-flowing paragraph. SimplrAI's output schema is designed
-around precisely this finding.
+\subsection{Hallucination and factual reliability}
 
-% TODO: hallucination section
-% TODO: reading level / UX section
-% TODO: synthesis / gaps
+A serious obstacle to AI in education is that LLMs sometimes generate confident
+but false statements. Maynez et al.\ (2020) document this rigorously. OpenAI
+(2023) shows that prompting strategy substantially influences accuracy. Two
+mitigation approaches: structured prompting (Li et al., 2023) and
+retrieval-augmented generation (Lewis et al., 2020). SimplrAI combines both.
+
+\subsection{Reading-level adaptation and interface design}
+
+The Lexile Framework (MetaMetrics, 2019) shows comprehension falls sharply when
+text exceeds a learner's threshold. Xu et al.\ (2023) show LLMs default to
+college-level prose unless constrained. Nielsen Norman Group (2023) and Reich
+(2020) find students learn best from interfaces with low visual noise and chunked
+content. Quinn et al.\ (2023) argue that dense paragraphs are suboptimal for
+K--12 learners.
+
+\subsection{Synthesis and gaps}
+
+Three gaps: no deployed system targets grade-appropriate explanation; structured
+prompts have not been evaluated for student comprehension; interface effects on
+learning are understudied. SimplrAI is engineered to address all three.
 
 \end{document}
