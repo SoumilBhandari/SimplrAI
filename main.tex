@@ -6,7 +6,7 @@
 \usepackage{parskip}
 \usepackage{enumitem}
 \usepackage{graphicx}
-\usepackage{hyperref}  % fixed!! had to move it after graphicx, stackoverflow saved me
+\usepackage{hyperref}
 
 \title{Engineering for Clarity: Designing SimplrAI,\\
 a Grade-Appropriate AI Explanation System for Student Learning}
@@ -54,13 +54,13 @@ To answer it, I designed and built SimplrAI, an explanation system for students
 from sixth grade through the first years of college. SimplrAI wraps a frontier
 LLM in three deliberate layers:
 \begin{enumerate}[leftmargin=1.4em]
-  \item A \textbf{structured prompting layer} that enforces a
+  \item A \textbf{structured prompting layer} enforcing a
   definition--example--analogy--application output schema with lightweight
-  retrieval grounding against vetted curriculum sources.
-  \item A \textbf{grade-level adaptation layer} that rewrites vocabulary and
-  sentence complexity to match the target Lexile band.
+  retrieval grounding.
+  \item A \textbf{grade-level adaptation layer} matching vocabulary and sentence
+  complexity to the target Lexile band.
   \item A \textbf{minimal user interface} built on progressive-disclosure
-  principles that chunks explanations into expandable sections.
+  principles.
 \end{enumerate}
 
 Section 2 surveys the relevant literature. Section 3 describes methodology.
@@ -68,33 +68,29 @@ Sections 4--6 present results, discussion, and limitations.
 
 \section{Literature Review}
 
-The literature relevant to SimplrAI spans four fields: AI tutoring systems,
-cognitive load theory, hallucination and factual reliability in LLMs, and
-reading-level adaptation.
-
 \subsection{AI tutoring systems}
 
 Koedinger et al.\ (2022) found that AI tutors can support conceptual
 understanding when their explanations are appropriately structured and
 scaffolded. OpenAI (2023) and Anthropic (2024) both describe their models as
 optimized for general helpfulness rather than pedagogical clarity. Pew Research
-(2024) confirmed rapid adoption but warned that educational usefulness is limited
-by inconsistent accuracy. Dwivedi et al.\ (2023) argue that LLMs produce outputs
-that are syntactically fluent but epistemically unreliable.
+(2024) confirmed rapid adoption but warned educational usefulness is limited by
+inconsistent accuracy. Dwivedi et al.\ (2023) argue LLMs produce outputs that
+are syntactically fluent but epistemically unreliable.
 
 \subsection{Cognitive load theory}
 
 Cognitive load theory (Sweller, 1988) holds that working memory can only process
-a limited amount of novel information at once. Long, dense, or disorganized
-explanations increase extraneous load. Later refinements (Kalyuga, 2009; Paas
-\& van Merri\"enboer, 2020) emphasize concise, sequenced, chunked explanations.
-Chi and Wylie's ICAP framework (2014) finds that explanations prompting active
-construction outperform passive ones. SimplrAI's output schema addresses this.
+a limited amount of novel information at once. Long, dense, disorganized
+explanations increase extraneous load. Later refinements (Kalyuga, 2009;
+Paas \& van Merri\"enboer, 2020) emphasize concise, sequenced, chunked
+explanations. Chi and Wylie's ICAP framework (2014) finds explanations prompting
+active construction outperform passive ones.
 
 \subsection{Hallucination and factual reliability}
 
 Maynez et al.\ (2020) document hallucination rigorously. OpenAI (2023) shows
-prompting strategy influences accuracy. Two mitigation approaches: structured
+prompting strategy influences accuracy. Mitigation approaches: structured
 prompting (Li et al., 2023) and retrieval-augmented generation (Lewis et al.,
 2020). SimplrAI combines both.
 
@@ -102,39 +98,67 @@ prompting (Li et al., 2023) and retrieval-augmented generation (Lewis et al.,
 
 The Lexile Framework (MetaMetrics, 2019) shows comprehension falls when text
 exceeds a learner's threshold. Xu et al.\ (2023) show LLMs default to
-college-level prose unless constrained. Nielsen Norman Group (2023) and Reich
-(2020) find students learn best from interfaces with low visual noise. Quinn et
-al.\ (2023) argue dense paragraphs are suboptimal for K--12 learners.
+college-level prose unless constrained. Nielsen Norman Group (2023), Reich
+(2020), and Quinn et al.\ (2023) find students learn best from interfaces with
+low visual noise and chunked content.
 
 \subsection{Synthesis and gaps}
 
 Three gaps: no deployed system targets grade-appropriate explanation; structured
-prompts have not been evaluated for student comprehension; interface effects on
-learning are understudied. SimplrAI addresses all three.
+prompts unevaluated for student comprehension; interface effects understudied.
+SimplrAI addresses all three.
 
 \section{Methodology}
 
 \subsection{The SimplrAI system}
 
-SimplrAI is implemented as a web application: React front end, Node/Express
-backend, Supabase Postgres database, deployed at
-\href{https://simplrai.tech}{\texttt{simplrai.tech}}. All completions routed
-through the GPT-5 API.
+SimplrAI is a React/Node/Express/Supabase web application deployed at
+\href{https://simplrai.tech}{\texttt{simplrai.tech}}. The \textit{prompting
+layer} enforces a four-part output (definition, example, analogy, application),
+imposes a maximum response length, and forbids above-grade terminology without
+inline definition. The \textit{retrieval layer} searches a 4,300-document corpus
+from OpenStax, Khan Academy, and CK-12; up to three passages are passed as
+grounding context. The \textit{interface layer} renders each section as an
+expandable card with a ``explain simpler'' button.
 
-The \textit{prompting layer} accepts a user question plus a target grade level
-(6--14) and constructs a system prompt enforcing a fixed four-part output:
-(i) a one-sentence definition, (ii) a worked example, (iii) a concrete analogy,
-(iv) a short application. The prompt imposes a maximum response length and
-forbids above-grade terminology without inline definition.
+\subsection{Participants}
 
-The \textit{retrieval layer} performs semantic search over a 4,300-document
-corpus from OpenStax, Khan Academy, and CK-12; up to three retrieved passages
-are passed as grounding context.
+Students were recruited from two U.S.\ partner schools and an online
+study-skills community. Final sample: $N = 73$ (middle school $n = 24$;
+high school $n = 31$; college $n = 18$). Ages 11--22 ($M = 16.2$, $SD = 2.7$);
+49\% female, 47\% male. All minors provided parental consent.
 
-The \textit{interface layer} renders each output section as a separately
-expandable card, surfaces source links, and provides a one-click ``explain it
-simpler'' button.
+% NOTE: double check N. i think a few more responses came in
+% might need to re-run exclusions
 
-% TODO: participants, design, procedure subsections
+\subsection{Design}
+
+Three-arm between-subjects design: SimplrAI, ChatGPT (GPT-5), textbook-only
+control. Stratified randomization balanced grade level. Each participant
+completed Pre-Algebra, Biology, and U.S.\ History sessions (counterbalanced).
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{fig1_design.pdf}
+  \caption{Study design and participant flow.}
+  \label{fig:design}
+\end{figure}
+
+\subsection{Procedure}
+
+10-question pre-test $\to$ 20 minutes with assigned tool $\to$ 10-question
+post-test $\to$ 5-item Likert survey (clarity, accuracy, helpfulness, reading
+difficulty, trust).
+
+\subsection{Materials and measures}
+
+Quiz items validated by two teachers and pilot-tested with five students.
+Reading level measured via Flesch--Kincaid. Factual accuracy scored by two
+experts on a four-point rubric; weighted Cohen's $\kappa = 0.84$.
+
+\subsection{Analysis plan}
+
+Descriptive statistics; independent-samples $t$-tests; Cohen's $d$.
+All planned comparisons reported (pre-registered).
 
 \end{document}
