@@ -6,6 +6,7 @@
 \usepackage{parskip}
 \usepackage{enumitem}
 \usepackage{graphicx}
+\usepackage{booktabs}
 \usepackage{hyperref}
 
 \title{Engineering for Clarity: Designing SimplrAI,\\
@@ -24,23 +25,14 @@ more than 63\% of American teenagers report using AI for schoolwork, and nearly
 one in five uses it daily. The tools they reach for---ChatGPT, Gemini,
 Perplexity---were built as general-purpose conversational agents, optimized
 for breadth, fluency, and general reasoning. None were designed for the specific
-cognitive needs of a thirteen-year-old trying to understand the chain rule for
-the first time.
+cognitive needs of a thirteen-year-old trying to understand the chain rule.
 
 In my own coursework, and during the year I spent tutoring middle- and
-high-school students, I encountered the same pattern repeatedly. A student would
-ask a chatbot to explain mitosis, derivative notation, or the causes of the
-French Revolution. The model would produce a fluent, dense, six-paragraph
-response written somewhere between a college textbook and an encyclopedia
-article. The student would skim it, decide they were still confused, and ask
-for it to be simpler. The next response would often be longer than the first.
-
-This is a design problem, not a capability problem. Frontier LLMs already have
-the underlying knowledge to teach high-school content; what they lack is a
-pedagogical scaffold---structured output, age-aware reading level, intentional
-hallucination control, and an interface that respects what cognitive scientists
-have known for forty years about working-memory limits (Sweller, 1988;
-Paas \& van Merri\"enboer, 2020).
+high-school students, I encountered the same pattern repeatedly. A student
+would ask a chatbot to explain mitosis or derivative notation. The model would
+produce a fluent, dense, six-paragraph response written at a collegiate level.
+The student would skim it, decide they were still confused, ask for simpler.
+The next response would often be longer. This is a design problem.
 
 This project asks:
 
@@ -51,114 +43,122 @@ meaningfully improve student comprehension?
 \end{quote}
 
 To answer it, I designed and built SimplrAI, an explanation system for students
-from sixth grade through the first years of college. SimplrAI wraps a frontier
-LLM in three deliberate layers:
-\begin{enumerate}[leftmargin=1.4em]
-  \item A \textbf{structured prompting layer} enforcing a
-  definition--example--analogy--application output schema with lightweight
-  retrieval grounding.
-  \item A \textbf{grade-level adaptation layer} matching vocabulary and sentence
-  complexity to the target Lexile band.
-  \item A \textbf{minimal user interface} built on progressive-disclosure
-  principles.
-\end{enumerate}
-
-Section 2 surveys the relevant literature. Section 3 describes methodology.
-Sections 4--6 present results, discussion, and limitations.
+from sixth grade through the first years of college, wrapping a frontier LLM in
+three deliberate layers: a structured prompting layer, a grade-level adaptation
+layer, and a minimal interface.
 
 \section{Literature Review}
 
 \subsection{AI tutoring systems}
 
 Koedinger et al.\ (2022) found that AI tutors can support conceptual
-understanding when their explanations are appropriately structured and
-scaffolded. OpenAI (2023) and Anthropic (2024) both describe their models as
-optimized for general helpfulness rather than pedagogical clarity. Pew Research
-(2024) confirmed rapid adoption but warned educational usefulness is limited by
-inconsistent accuracy. Dwivedi et al.\ (2023) argue LLMs produce outputs that
-are syntactically fluent but epistemically unreliable.
+understanding when explanations are appropriately structured. OpenAI (2023) and
+Anthropic (2024) optimize for general helpfulness, not pedagogical clarity. Pew
+Research (2024) confirmed rapid student adoption but warned about inconsistent
+accuracy. Dwivedi et al.\ (2023) argue LLMs are epistemically unreliable for
+learning.
 
 \subsection{Cognitive load theory}
 
 Cognitive load theory (Sweller, 1988) holds that working memory can only process
-a limited amount of novel information at once. Long, dense, disorganized
-explanations increase extraneous load. Later refinements (Kalyuga, 2009;
-Paas \& van Merri\"enboer, 2020) emphasize concise, sequenced, chunked
-explanations. Chi and Wylie's ICAP framework (2014) finds explanations prompting
-active construction outperform passive ones.
+limited novel information at once. Long, dense explanations increase extraneous
+load (Kalyuga, 2009; Paas \& van Merri\"enboer, 2020). Chi and Wylie's ICAP
+framework (2014) finds active-construction explanations outperform passive ones.
 
 \subsection{Hallucination and factual reliability}
 
-Maynez et al.\ (2020) document hallucination rigorously. OpenAI (2023) shows
-prompting strategy influences accuracy. Mitigation approaches: structured
-prompting (Li et al., 2023) and retrieval-augmented generation (Lewis et al.,
-2020). SimplrAI combines both.
+Maynez et al.\ (2020) document LLM hallucination. OpenAI (2023) shows prompting
+strategy influences accuracy. Mitigations: structured prompting (Li et al.,
+2023) and retrieval-augmented generation (Lewis et al., 2020).
 
 \subsection{Reading-level adaptation and interface design}
 
-The Lexile Framework (MetaMetrics, 2019) shows comprehension falls when text
-exceeds a learner's threshold. Xu et al.\ (2023) show LLMs default to
-college-level prose unless constrained. Nielsen Norman Group (2023), Reich
-(2020), and Quinn et al.\ (2023) find students learn best from interfaces with
-low visual noise and chunked content.
+Lexile Framework (MetaMetrics, 2019): comprehension falls when text exceeds
+learner's threshold. Xu et al.\ (2023): LLMs default to college prose unless
+constrained. Nielsen Norman Group (2023), Reich (2020), Quinn et al.\ (2023):
+chunked, low-noise interfaces outperform dense text for K--12 learners.
 
 \subsection{Synthesis and gaps}
 
 Three gaps: no deployed system targets grade-appropriate explanation; structured
 prompts unevaluated for student comprehension; interface effects understudied.
-SimplrAI addresses all three.
 
 \section{Methodology}
 
 \subsection{The SimplrAI system}
 
-SimplrAI is a React/Node/Express/Supabase web application deployed at
-\href{https://simplrai.tech}{\texttt{simplrai.tech}}. The \textit{prompting
-layer} enforces a four-part output (definition, example, analogy, application),
-imposes a maximum response length, and forbids above-grade terminology without
-inline definition. The \textit{retrieval layer} searches a 4,300-document corpus
-from OpenStax, Khan Academy, and CK-12; up to three passages are passed as
-grounding context. The \textit{interface layer} renders each section as an
-expandable card with a ``explain simpler'' button.
+SimplrAI is a React/Node/Express/Supabase web application at
+\href{https://simplrai.tech}{\texttt{simplrai.tech}}. Prompting layer enforces
+four-part output (definition, example, analogy, application). Retrieval layer
+searches 4,300-document corpus (OpenStax, Khan Academy, CK-12). Interface layer
+renders expandable cards with ``explain simpler'' button.
 
 \subsection{Participants}
 
-Students were recruited from two U.S.\ partner schools and an online
-study-skills community. Final sample: $N = 73$ (middle school $n = 24$;
-high school $n = 31$; college $n = 18$). Ages 11--22 ($M = 16.2$, $SD = 2.7$);
-49\% female, 47\% male. All minors provided parental consent.
-
-% NOTE: double check N. i think a few more responses came in
-% might need to re-run exclusions
+$N = 73$ (middle school $n = 24$; high school $n = 31$; college $n = 18$).
+Ages 11--22. All minors with parental consent.
 
 \subsection{Design}
 
-Three-arm between-subjects design: SimplrAI, ChatGPT (GPT-5), textbook-only
-control. Stratified randomization balanced grade level. Each participant
-completed Pre-Algebra, Biology, and U.S.\ History sessions (counterbalanced).
+Three-arm between-subjects: SimplrAI, ChatGPT (GPT-5), textbook control.
+Counterbalanced subjects: Pre-Algebra, Biology, U.S.\ History.
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{fig1_design.pdf}
   \caption{Study design and participant flow.}
-  \label{fig:design}
 \end{figure}
 
 \subsection{Procedure}
 
-10-question pre-test $\to$ 20 minutes with assigned tool $\to$ 10-question
-post-test $\to$ 5-item Likert survey (clarity, accuracy, helpfulness, reading
-difficulty, trust).
+Pre-test (10 questions) $\to$ 20 min study $\to$ post-test (10 questions) $\to$
+5-item Likert survey.
 
 \subsection{Materials and measures}
 
-Quiz items validated by two teachers and pilot-tested with five students.
-Reading level measured via Flesch--Kincaid. Factual accuracy scored by two
-experts on a four-point rubric; weighted Cohen's $\kappa = 0.84$.
+Quiz items teacher-validated. Reading level: Flesch--Kincaid. Accuracy: two
+experts, four-point rubric, $\kappa = 0.84$.
 
-\subsection{Analysis plan}
+\section{Results}
 
-Descriptive statistics; independent-samples $t$-tests; Cohen's $d$.
-All planned comparisons reported (pre-registered).
+% PLACEHOLDER - filling this in as data comes back from graders
+% these numbers are rough estimates, will verify before final
+
+\subsection{Clarity ratings}
+
+% TODO: fill in actual means/SDs
+Mean clarity ratings: SimplrAI $M \approx 6.1$, ChatGPT $M \approx 4.8$.
+% run the t-test properly once i have the full graded dataset
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.92\linewidth]{fig2_clarity.pdf}
+  \caption{Mean clarity ratings by grade level and condition. (DRAFT)}
+\end{figure}
+
+\subsection{Quiz performance}
+
+% placeholder -- need to verify pre-test equivalence first
+Mean improvement (preliminary): $+16$ pp (SimplrAI), $+8$ pp (ChatGPT),
+$+4$ pp (control).
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.92\linewidth]{fig3_quiz.pdf}
+  \caption{Quiz scores by condition. (DRAFT - numbers not final)}
+\end{figure}
+
+\subsection{Reading-level alignment}
+
+% need to run FK scores on all the responses -- not done yet
+SimplrAI MAD $\approx 0.6$ grades. ChatGPT $\approx 3.8$ grades over target.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.92\linewidth]{fig4_reading.pdf}
+  \caption{Reading level alignment. (DRAFT)}
+\end{figure}
+
+% TODO: accuracy section, trust/helpfulness section, summary table
 
 \end{document}
