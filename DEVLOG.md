@@ -69,3 +69,19 @@ clickable links and dealing with it later.
 
 ---
 
+## Apr 16 — 1:22am
+
+generated all four figures with the matplotlib script. they look ok-ish but:
+
+- the axis labels are rendering in some default sans font even though i told it
+  to use DejaVu Serif. i think the latex pdf is rendering them differently than
+  the matplotlib preview window
+- fig3 has weird extra whitespace below the legend, no clue why
+- fig1 (the flowchart) — the arrows are slightly misaligned, like 2px off. i
+  can see it but maybe no one else will
+
+it's 1am, the figures are committed, im not redoing this tonight. will fix
+fonts when i have brain cells again.
+
+---
+
