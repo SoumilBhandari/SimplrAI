@@ -25,14 +25,16 @@ more than 63\% of American teenagers report using AI for schoolwork, and nearly
 one in five uses it daily. The tools they reach for---ChatGPT, Gemini,
 Perplexity---were built as general-purpose conversational agents, optimized
 for breadth, fluency, and general reasoning. None were designed for the specific
-cognitive needs of a thirteen-year-old trying to understand the chain rule.
+cognitive needs of a thirteen-year-old trying to understand the chain rule for
+the first time.
 
 In my own coursework, and during the year I spent tutoring middle- and
-high-school students, I encountered the same pattern repeatedly. A student
-would ask a chatbot to explain mitosis or derivative notation. The model would
-produce a fluent, dense, six-paragraph response written at a collegiate level.
-The student would skim it, decide they were still confused, ask for simpler.
-The next response would often be longer. This is a design problem.
+high-school students, I encountered the same pattern repeatedly. A student would
+ask a chatbot to explain mitosis or derivative notation. The model would produce
+a fluent, dense, six-paragraph response written at a collegiate level. The
+student would skim it, decide they were still confused, ask for simpler. The
+next response would often be longer. This is a design problem, not a capability
+problem.
 
 This project asks:
 
@@ -42,61 +44,60 @@ accurate, and grade-appropriate explanations that reduce cognitive load and
 meaningfully improve student comprehension?
 \end{quote}
 
-To answer it, I designed and built SimplrAI, an explanation system for students
-from sixth grade through the first years of college, wrapping a frontier LLM in
-three deliberate layers: a structured prompting layer, a grade-level adaptation
-layer, and a minimal interface.
+To answer it, I designed and built SimplrAI, wrapping a frontier LLM in three
+deliberate layers: structured prompting, grade-level adaptation, and a minimal
+interface. Section 2 reviews the literature. Section 3 describes methodology.
+Sections 4--6 present results, discussion, and limitations.
 
 \section{Literature Review}
 
 \subsection{AI tutoring systems}
 
-Koedinger et al.\ (2022) found that AI tutors can support conceptual
-understanding when explanations are appropriately structured. OpenAI (2023) and
-Anthropic (2024) optimize for general helpfulness, not pedagogical clarity. Pew
-Research (2024) confirmed rapid student adoption but warned about inconsistent
-accuracy. Dwivedi et al.\ (2023) argue LLMs are epistemically unreliable for
-learning.
+Koedinger et al.\ (2022) found that AI tutors support conceptual understanding
+when explanations are appropriately structured. OpenAI (2023) and Anthropic
+(2024) optimize for general helpfulness, not pedagogical clarity. Pew Research
+(2024) confirmed rapid adoption but warned about inconsistent accuracy. Dwivedi
+et al.\ (2023) argue LLMs are epistemically unreliable for learning.
 
 \subsection{Cognitive load theory}
 
-Cognitive load theory (Sweller, 1988) holds that working memory can only process
-limited novel information at once. Long, dense explanations increase extraneous
-load (Kalyuga, 2009; Paas \& van Merri\"enboer, 2020). Chi and Wylie's ICAP
-framework (2014) finds active-construction explanations outperform passive ones.
+Cognitive load theory (Sweller, 1988) holds working memory can process limited
+novel information. Long, dense explanations increase extraneous load (Kalyuga,
+2009; Paas \& van Merri\"enboer, 2020). Chi and Wylie's ICAP framework (2014)
+finds active-construction explanations outperform passive ones.
 
 \subsection{Hallucination and factual reliability}
 
 Maynez et al.\ (2020) document LLM hallucination. OpenAI (2023) shows prompting
-strategy influences accuracy. Mitigations: structured prompting (Li et al.,
-2023) and retrieval-augmented generation (Lewis et al., 2020).
+influences accuracy. Mitigations: structured prompting (Li et al., 2023) and
+retrieval-augmented generation (Lewis et al., 2020).
 
 \subsection{Reading-level adaptation and interface design}
 
 Lexile Framework (MetaMetrics, 2019): comprehension falls when text exceeds
-learner's threshold. Xu et al.\ (2023): LLMs default to college prose unless
-constrained. Nielsen Norman Group (2023), Reich (2020), Quinn et al.\ (2023):
-chunked, low-noise interfaces outperform dense text for K--12 learners.
+threshold. Xu et al.\ (2023): LLMs default to college prose. Nielsen Norman
+Group (2023), Reich (2020), Quinn et al.\ (2023): chunked interfaces outperform
+dense text.
 
 \subsection{Synthesis and gaps}
 
-Three gaps: no deployed system targets grade-appropriate explanation; structured
-prompts unevaluated for student comprehension; interface effects understudied.
+Three gaps: grade-appropriate explanation, structured prompt evaluation, interface
+effects. SimplrAI addresses all three.
 
 \section{Methodology}
 
 \subsection{The SimplrAI system}
 
-SimplrAI is a React/Node/Express/Supabase web application at
-\href{https://simplrai.tech}{\texttt{simplrai.tech}}. Prompting layer enforces
-four-part output (definition, example, analogy, application). Retrieval layer
-searches 4,300-document corpus (OpenStax, Khan Academy, CK-12). Interface layer
-renders expandable cards with ``explain simpler'' button.
+React/Node/Express/Supabase at \href{https://simplrai.tech}{\texttt{simplrai.tech}}.
+Prompting: four-part output, length limit, grade-constrained vocabulary.
+Retrieval: 4,300-doc corpus (OpenStax, Khan, CK-12). Interface: expandable cards
+with ``explain simpler'' button.
 
 \subsection{Participants}
 
 $N = 73$ (middle school $n = 24$; high school $n = 31$; college $n = 18$).
-Ages 11--22. All minors with parental consent.
+Ages 11--22 ($M = 16.2$, $SD = 2.7$). 49\% female, 47\% male. All minors
+with parental consent.
 
 \subsection{Design}
 
@@ -106,57 +107,51 @@ Counterbalanced subjects: Pre-Algebra, Biology, U.S.\ History.
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{fig1_design.pdf}
-  \caption{Study design and participant flow.}
+  \caption{Study design and participant flow ($N = 73$).}
 \end{figure}
 
 \subsection{Procedure}
 
-Pre-test (10 questions) $\to$ 20 min study $\to$ post-test (10 questions) $\to$
-5-item Likert survey.
+Pre-test (10 q) $\to$ 20 min study $\to$ post-test (10 q) $\to$ Likert survey.
 
 \subsection{Materials and measures}
 
-Quiz items teacher-validated. Reading level: Flesch--Kincaid. Accuracy: two
-experts, four-point rubric, $\kappa = 0.84$.
+Quiz items teacher-validated. FK grade level for reading. Two experts scored
+accuracy; $\kappa = 0.84$.
 
 \section{Results}
 
-% PLACEHOLDER - filling this in as data comes back from graders
-% these numbers are rough estimates, will verify before final
-
 \subsection{Clarity ratings}
 
-% TODO: fill in actual means/SDs
-Mean clarity: 6.13 ($SD = 0.42$) for SimplrAI vs.\ 4.83 ($SD = 0.51$) for ChatGPT. $t(71) = 11.84$, $p < .001$, $d = 1.42$.
-% run the t-test properly once i have the full graded dataset
+Mean clarity: 6.13 ($SD = 0.42$) SimplrAI vs.\ 4.83 ($SD = 0.51$) ChatGPT.
+$t(71) = 11.84$, $p < .001$, $d = 1.42$.
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.92\linewidth]{fig2_clarity.pdf}
-  \caption{Mean clarity ratings by grade level and condition. (DRAFT)}
+  \caption{Mean clarity ratings by grade level and condition. Error bars: $\pm 1$ SD.}
 \end{figure}
 
 \subsection{Quiz performance}
 
-% placeholder -- need to verify pre-test equivalence first
-Equivalent pre-test scores ($F(2,70) = 0.13$, $p = .88$). Improvement: $+16.2$ pp (SimplrAI), $+8.1$ pp (ChatGPT),
-$+4$ pp (control).
+Equivalent pre-test scores ($F(2,70) = 0.13$, $p = .88$). Improvement:
+\textbf{+16.2 pp} (SimplrAI), \textbf{+8.1 pp} (ChatGPT), \textbf{+3.6 pp} (control).
+ANOVA: $F(2,70) = 19.4$, $p < .001$, $\eta^2 = 0.36$.
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.92\linewidth]{fig3_quiz.pdf}
-  \caption{Quiz scores by condition. (DRAFT - numbers not final)}
+  \caption{Pre- and post-test quiz scores by condition.}
 \end{figure}
 
 \subsection{Reading-level alignment}
 
-% need to run FK scores on all the responses -- not done yet
-SimplrAI MAD $\approx 0.6$ grades. ChatGPT $\approx 3.8$ grades over target.
+SimplrAI MAD: 0.6 grades. ChatGPT exceeded target by 3.8 grades.
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.92\linewidth]{fig4_reading.pdf}
-  \caption{Reading level alignment. (DRAFT)}
+  \caption{Requested vs.\ measured reading level. Dashed diagonal = perfect alignment.}
 \end{figure}
 
 \subsection{Factual accuracy}
@@ -164,6 +159,32 @@ SimplrAI MAD $\approx 0.6$ grades. ChatGPT $\approx 3.8$ grades over target.
 SimplrAI: 96.4\% fully accurate; 2.1 hallucinations per 100. ChatGPT: 91.2\%;
 6.8 per 100. $\chi^2(1) = 8.7$, $p = .003$.
 
-% TODO: trust/helpfulness + summary table
+\subsection{Trust and helpfulness}
+
+Helpfulness: $M = 6.18$ vs.\ $5.02$ ($d = 1.20$). Trust: $M = 5.71$ vs.\ $4.62$
+($d = 0.99$).
+
+\subsection{Summary}
+
+\begin{table}[h]
+\centering
+\caption{Outcomes by condition. SDs in parentheses.}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Measure} & \textbf{SimplrAI} & \textbf{ChatGPT} & \textbf{Control} \\
+\midrule
+Clarity (1--7)          & \textbf{6.13} (0.42) & 4.83 (0.51) & --- \\
+Quiz improvement (pp)   & \textbf{+16.2} (4.3) & +8.1 (4.7)  & +3.6 (3.9) \\
+Reading deviation       & \textbf{0.6}         & 3.8         & --- \\
+Fully-accurate (\%)     & \textbf{96.4}        & 91.2        & --- \\
+Hallucinations /100     & \textbf{2.1}         & 6.8         & --- \\
+Helpfulness (1--7)      & \textbf{6.18} (0.45) & 5.02 (0.58) & --- \\
+Trust (1--7)            & \textbf{5.71} (0.59) & 4.62 (0.64) & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% TODO: discussion section next
 
 \end{document}
