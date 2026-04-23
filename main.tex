@@ -185,6 +185,36 @@ Trust (1--7)            & \textbf{5.71} (0.59) & 4.62 (0.64) & --- \\
 \end{tabular}
 \end{table}
 
-% TODO: discussion, limitations, conclusion, references
+\section{Discussion}
+
+% ok starting the discussion -- this section is going to be the hardest to write
+% main point: structure matters more than model capability
+
+\subsection{Structure beats raw capability}
+
+The same underlying model---the current GPT-5 family---sits behind both
+SimplrAI and the ChatGPT condition. The two systems differ in their wrapper,
+not the underlying model. The fact that one wrapper produced roughly twice the
+learning gain of another suggests that the bottleneck for educational AI in 2026
+is not model capability but pedagogical engineering. Frontier models already
+know enough to teach high-school content; what they lack is the design
+discipline that human teachers and textbook authors have spent decades
+developing.
+
+\subsection{Reading-level mismatch is the silent failure mode}
+
+Perhaps the most striking finding is the reading-level result: when asked for a
+sixth-grade explanation, ChatGPT delivered something closer to a tenth-grade
+explanation. Students do not always recognize this mismatch; they often report
+being ``bad at the subject'' when they are in fact being asked to read above
+their comprehension threshold. A 20-minute session with an explanation pitched
+three grade levels too high produces measurable failure. Reading-level alignment
+is therefore not a cosmetic feature---it is a precondition for the explanation
+being useful at all.
+
+% TODO: hallucination subsection
+% TODO: implications
+% still need to write the boundary conditions / limitations on what we can claim
+% this feels too strong without acknowledging the ChatGPT condition was naive use
 
 \end{document}
