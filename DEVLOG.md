@@ -85,3 +85,22 @@ fonts when i have brain cells again.
 
 ---
 
+## Apr 23 — 12:43am
+
+discussion section is brutal. wrote 3 different paragraphs for the opening
+and deleted all of them:
+
+1. started with "These results show..." — boring, also overclaiming
+2. tried "The central question of this study was..." — felt like middle school
+3. tried opening with the reading-level result as a hook — read pretentious
+
+the issue is the effect sizes are SO BIG that anything i write sounds like
+i'm bragging. mentor warned me about this. need to lead with caveats and
+boundary conditions, not headline numbers.
+
+writing a comment to myself in the latex: "DONT START WITH +16.2 PP".
+
+saving and sleeping. will rewrite the opening tomorrow morning when im fresh.
+
+---
+
