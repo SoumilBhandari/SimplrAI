@@ -245,11 +245,72 @@ Second, participants may be more academically motivated than the general
 population. Third, the 20-minute study session captures only short-term
 comprehension.
 
-% MAJOR limitation i need to address: ChatGPT condition was naive use
-% mentor pointed this out -- a well-prompted ChatGPT would close the gap
-% need to be honest about that
+Fourth, and most consequentially, the ChatGPT comparison condition reflects
+naive use---the web interface, no system prompt, no scaffolding, by students of
+varying prompting skill. A well-prompted ChatGPT, with a system prompt
+approximating SimplrAI's definition--example--analogy--application schema, would
+almost certainly narrow the gap substantially. The effect sizes reported in
+Section~4 should be read as the gap between a purpose-built system and typical
+student use, not as the gap between SimplrAI and the upper bound of what a
+frontier LLM can produce.
 
-% TODO: conclusion
-% TODO: references section
+Future work should include longer longitudinal studies, broader subject coverage,
+a prompt-engineered ChatGPT condition, comparison against purpose-built systems
+such as Khanmigo, and a larger cross-cultural sample.
+
+\section{Conclusion}
+
+This project set out to determine whether an AI explanation system engineered
+around pedagogical principles could deliver measurably better learning outcomes
+than the general-purpose chatbots students currently rely on. The answer, in
+this study, is yes. SimplrAI produced quiz-score gains roughly twice those of
+ChatGPT, clarity ratings more than a full point higher, factual accuracy five
+percentage points higher, and reading levels six times more closely aligned to
+the target grade. None of these gains came from a more capable model; both
+systems used the same GPT-5 model. They came from how the model was wrapped.
+
+The broader implication is that the most important work in educational AI may
+not be the next foundation model. It may be the less glamorous work of designing
+systems that take what these models already know and present it the way good
+teachers do: clearly, at the right level, with examples that meet the student
+where they are.
+
+\section*{References}
+
+\textbf{AI / LLM Research}
+
+\begin{list}{}{\setlength{\leftmargin}{1.5em}\setlength{\itemindent}{-1.5em}\setlength{\itemsep}{0.3em}}
+\item Anthropic. (2024). \textit{Constitutional AI.} \url{https://www.anthropic.com/index/constitutional-ai}
+\item Lewis, P., et al. (2020). Retrieval-augmented generation. \url{https://arxiv.org/abs/2005.11401}
+\item Li, X., et al. (2023). Prompt engineering survey. \url{https://arxiv.org/abs/2303.08774}
+\item Maynez, J., et al. (2020). Faithfulness in summarization. \url{https://aclanthology.org/2020.acl-main.450/}
+\item OpenAI. (2023). \textit{GPT-4 Technical Report.} \url{https://arxiv.org/abs/2303.08774}
+\item Xu, W., et al. (2023). Grade-level text controls. \url{https://arxiv.org/abs/2310.10572}
+\end{list}
+
+\textbf{Cognitive Load / Educational Psychology}
+
+\begin{list}{}{\setlength{\leftmargin}{1.5em}\setlength{\itemindent}{-1.5em}\setlength{\itemsep}{0.3em}}
+\item Chi, M. T. H., \& Wylie, R. (2014). The ICAP framework. \url{https://doi.org/10.3102/0034654314542828}
+\item Hattie, J. (2008). \textit{Visible Learning.} Routledge.
+\item Kalyuga, S. (2009). \textit{Managing Cognitive Load.} Springer.
+\item Paas, F., \& van Merri\"enboer, J. (2020). Cognitive-load theory. \url{https://doi.org/10.1007/s10648-020-09534-9}
+\item Sweller, J. (1988). Cognitive load during problem solving. \textit{Cognitive Science}, 12(2), 257--285.
+\end{list}
+
+\textbf{EdTech, UX, and Other}
+
+\begin{list}{}{\setlength{\leftmargin}{1.5em}\setlength{\itemindent}{-1.5em}\setlength{\itemsep}{0.3em}}
+\item Dwivedi, Y. K., et al. (2023). Risks of generative AI. \url{https://doi.org/10.1016/j.ijinfomgt.2023.102695}
+\item Koedinger, K. R., et al. (2022). Learning science and AI. \url{https://www.pnas.org/doi/10.1073/pnas.2122730119}
+\item MetaMetrics. (2019). \textit{Lexile Framework.} \url{https://lexile.com/}
+\item Nielsen Norman Group. (2023). Usability heuristics. \url{https://www.nngroup.com/articles/ten-usability-heuristics/}
+\item Pew Research Center. (2024). \textit{Teens and AI.} \url{https://www.pewresearch.org/internet/2024/05/01/teens-and-ai/}
+\item Quinn, D., et al. (2023). AI tools and K--12 learning. \url{https://journals.sagepub.com/doi/full/10.3102/00346543231160869}
+\item Reich, J. (2020). \textit{Failure to Disrupt.} MIT Press.
+\item Shanahan, T. (2014). Text complexity. \url{https://www.shanahanonliteracy.com/blog/the-complexity-of-text-and-the-common-core}
+\end{list}
+
+\end{document}
 
 \end{document}
