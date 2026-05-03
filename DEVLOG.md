@@ -104,3 +104,23 @@ saving and sleeping. will rewrite the opening tomorrow morning when im fresh.
 
 ---
 
+## May 3 — 6:30pm
+
+draft 1 is done!! sending to mentor tonight.
+
+before that — attempted to convert the manual reference list into a proper
+.bib file + biblatex. about 90 minutes in:
+
+- biblatex compilation hangs. like, hangs. overleaf shows the compile timer
+  going past 60s and just gives up
+- tried natbib instead. it works but the formatting is ugly and doesn't match
+  what i want
+- tried just including a .bib and citing 2 things. still broken
+
+i give up on the bibtex thing for now. the manual list looks fine. mentor
+will probably want APA 7 format but i'll deal with that during revisions.
+
+reverting all the bibtex changes. sending draft 1 as-is.
+
+---
+
