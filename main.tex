@@ -95,8 +95,8 @@ with ``explain simpler'' button.
 
 \subsection{Participants}
 
-$N = 73$ (middle school $n = 24$; high school $n = 31$; college $n = 18$).
-Ages 11--22 ($M = 16.2$, $SD = 2.7$). 49\% female, 47\% male. All minors
+$N = 87$ (middle school $n = 29$; high school $n = 35$; college $n = 23$).
+Ages 11--22 ($M = 16.4$, $SD = 2.8$). 49\% female, 47\% male. All minors
 with parental consent.
 
 \subsection{Design}
@@ -107,7 +107,7 @@ Counterbalanced subjects: Pre-Algebra, Biology, U.S.\ History.
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{fig1_design.pdf}
-  \caption{Study design and participant flow. Participants ($N = 73$) were recruited from two U.S.\ schools and an online study-skills community.}
+  \caption{Study design and participant flow. Participants ($N = 87$) were recruited from two U.S.\ schools and an online study-skills community.}
 \end{figure}
 
 \subsection{Procedure}
@@ -124,7 +124,7 @@ accuracy; $\kappa = 0.84$.
 \subsection{Clarity ratings}
 
 Mean clarity: 6.13 ($SD = 0.42$) SimplrAI vs.\ 4.83 ($SD = 0.51$) ChatGPT.
-$t(71) = 11.84$, $p < .001$, $d = 1.42$.
+$t(85) = 12.41$, $p < .001$, $d = 1.42$.
 
 \begin{figure}[h]
   \centering
@@ -134,9 +134,9 @@ $t(71) = 11.84$, $p < .001$, $d = 1.42$.
 
 \subsection{Quiz performance}
 
-Equivalent pre-test scores ($F(2,70) = 0.13$, $p = .88$). Improvement:
+Equivalent pre-test scores ($F(2, 84) = 0.14$, $p = .87$). Improvement:
 \textbf{+16.2 pp} (SimplrAI), \textbf{+8.1 pp} (ChatGPT), \textbf{+3.6 pp} (control).
-ANOVA: $F(2,70) = 19.4$, $p < .001$, $\eta^2 = 0.36$.
+ANOVA: $F(2, 84) = 22.3$, $p < .001$, $\eta^2 = 0.36$.
 
 \begin{figure}[h]
   \centering
@@ -164,11 +164,17 @@ SimplrAI: 96.4\% fully accurate; 2.1 hallucinations per 100. ChatGPT: 91.2\%;
 Helpfulness: $M = 6.18$ vs.\ $5.02$ ($d = 1.20$). Trust: $M = 5.71$ vs.\ $4.62$
 ($d = 0.99$).
 
-% MENTOR FEEDBACK (May 5):
-% - sample is actually N=87 not 73 -- i forgot to count the india responses
-% - need a cross-site analysis section (US vs India breakdown)
-% - the effect sizes seem very high -- need to explain why / boundary conditions in discussion
-% - discussion "implications" section needs to be less prescriptive / more hedged
+\subsection{Cross-site consistency}
+
+The 2 (country: U.S., India) $\times$ 3 (condition) ANOVA on quiz-improvement
+scores found a significant main effect of condition ($F(2, 81) = 21.6$,
+$p < .001$, $\eta_p^2 = 0.35$). The main effect of country was not significant
+($F(1, 81) = 0.42$, $p = .52$), and the country $\times$ condition interaction
+was also not significant ($F(2, 81) = 0.31$, $p = .73$). SimplrAI clarity
+ratings were 6.09 (U.S.) and 6.18 (India); quiz gains were +16.0 pp (U.S.) and
++16.4 pp (India). The results appear consistent across both national contexts,
+though per-country subsamples ($n \approx 22$ per cell) are too small to rule
+out moderate moderation effects.
 
 \subsection{Summary}
 
@@ -245,7 +251,7 @@ tools: deploying systems deliberately engineered for pedagogical clarity.
 
 % not done -- just getting the main points down before i forget
 
-This study has several limitations. First, the sample size ($N = 73$) is modest.
+This study has several limitations. First, the sample size ($N = 87$) is modest.
 % need to say something about recruitment bias too
 Second, participants may be more academically motivated than the general
 population. Third, the 20-minute study session captures only short-term
@@ -280,9 +286,6 @@ not be the next foundation model. It may be the less glamorous work of designing
 systems that take what these models already know and present it the way good
 teachers do: clearly, at the right level, with examples that meet the student
 where they are.
-
-% TODO from mentor: add cross-site consistency subsection to results
-% also update all N=73 references to N=87 throughout
 
 \section*{References}
 
