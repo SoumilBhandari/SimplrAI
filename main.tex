@@ -1,21 +1,127 @@
-\documentclass[12pt]{article}
+\documentclass[11pt,letterpaper]{article}
 
-\usepackage[utf8]{inputenc}
+% ok so these are all the packages i need
+% got most of these from stack overflow lol
 \usepackage[T1]{fontenc}
-\usepackage[margin=1in]{geometry}
-\usepackage{parskip}
-\usepackage{enumitem}
+\usepackage[utf8]{inputenc}
+\usepackage{charter}  % this is the font for the body i think it looks clean
+\usepackage[scaled=0.86]{helvet}  % sans font for the headings, 0.86 looked best after i tried a bunch
+\usepackage{microtype}  % apparently this fixes kerning?? idk it just makes it look nicer
+\usepackage[letterpaper,margin=1in,top=1.05in,bottom=1.05in]{geometry}
 \usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{titlesec}
+\usepackage{titling}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{parskip}
+\usepackage{csquotes}
+% hyperref has to be near the end or it breaks everything (learned that the hard way)
+\usepackage[hidelinks,colorlinks=true,linkcolor=accent,urlcolor=accent,citecolor=accent]{hyperref}
+\usepackage{etoolbox}
+\usepackage{tcolorbox}
 
-\title{Engineering for Clarity: Designing SimplrAI,\\
-a Grade-Appropriate AI Explanation System for Student Learning}
-\author{Soumil Bhandari \\ BASIS Independent McLean}
-\date{April 2026}
+
+% colors!! picked these from coolors.co
+\definecolor{accent}{HTML}{1F3A68}  % dark blue - main color
+\definecolor{accent2}{HTML}{2A9D8F}  % the teal one
+\definecolor{softgray}{HTML}{6E7A86}
+\definecolor{rulegray}{HTML}{C8CDD3}  % for lines
+\definecolor{notebg}{HTML}{F4F1EA}  % not sure if i even use this anymore but whatever
+\definecolor{noteborder}{HTML}{C9B68C}
+
+%%%% typography stuff %%%%
+\setlength{\parskip}{0.55em}
+\setlength{\parindent}{0pt}  % no indent because it looks weird with parskip
+\renewcommand{\baselinestretch}{1.12}  % line spacing, 1.12 is the sweet spot
+
+% making the section headings look cool with the colored number box
+% took me forever to figure this out tbh
+\titleformat{\section}[hang]
+  {\sffamily\bfseries\large\color{accent}}
+  {\colorbox{accent}{\color{white}\hspace{0.35em}\thesection\hspace{0.35em}}}
+  {0.7em}
+  {}
+  [\vspace{-0.3em}{\color{rulegray}\rule{\linewidth}{0.4pt}}]
+% subsections are way simpler
+\titleformat{\subsection}
+  {\sffamily\bfseries\normalsize\color{accent}}
+  {\thesubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{1.5em}{0.7em}
+\titlespacing*{\subsection}{0pt}{1.0em}{0.4em}
+
+% captions for figures
+\captionsetup{
+  font={small},
+  labelfont={bf,color=accent},
+  labelsep=period,
+  justification=raggedright,
+  singlelinecheck=false,
+  skip=4pt
+}
+
+% header and footer stuff (mostly footer tbh i dont use the header)
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[L]{\footnotesize\color{softgray}SimplrAI \textendash{} Senior Capstone Research}
+\fancyfoot[R]{\footnotesize\color{softgray}\thepage}
+% have to redo this for plain pages or the first page looks weird
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \renewcommand{\headrulewidth}{0pt}
+  \fancyfoot[L]{\footnotesize\color{softgray}SimplrAI \textendash{} Senior Capstone Research}
+  \fancyfoot[R]{\footnotesize\color{softgray}\thepage}
+}
+
+% redoing the abstract environment because the default one is ugly
+\renewenvironment{abstract}{%
+  \begin{center}\sffamily\bfseries\color{accent}\normalsize ABSTRACT\end{center}
+  \vspace{-0.4em}
+  \begin{quote}\small\itshape\noindent\ignorespaces
+}{%
+  \end{quote}\vspace{0.4em}\hrule height 0.4pt\vspace{0.6em}
+}
+
+% leaving these blank because im doing the title manually below
+\title{}
+\author{}
+\date{}
 
 \begin{document}
-\maketitle
+
+% TITLE BLOCK starts here -- doing it manually because \maketitle is ugly
+{\footnotesize\sffamily\color{accent2}\textbf{\textsc{Senior Capstone Research} \,\textbullet\, May 2026}}
+
+\vspace{0.4em}
+
+% the actual title
+{\sffamily\bfseries\fontsize{22pt}{26pt}\selectfont\color{accent}%
+Engineering for Clarity:\\[0.15em]
+Designing and Evaluating SimplrAI, a Grade-Appropriate\\
+AI Explanation System for Student Learning\par}
+
+\vspace{0.4em}
+{\sffamily\itshape\color{softgray}A three-arm randomized study across four schools in the United States and India.}
+
+\vspace{0.7em}
+{\color{accent}\rule{\linewidth}{1.0pt}}
+\vspace{0.5em}
+
+% author info table -- using tabular because i couldnt figure out a better way
+\begin{tabular}{@{}p{0.55\linewidth}p{0.40\linewidth}@{}}
+{\sffamily\bfseries\large Soumil Bhandari} & {\sffamily\small\color{softgray}Senior Capstone Project} \\
+{\small\color{softgray}BASIS Independent McLean} & {\sffamily\small\color{softgray}May 2026} \\
+{\small\color{softgray}McLean, Virginia, USA} & {\sffamily\small\color{softgray}Cross-site study \textbullet{} USA \& India} \\
+\end{tabular}
+
+\vspace{0.8em}
+\textbf{Live system:}\ \ \href{https://simplrai.tech}{\color{accent}\texttt{https://simplrai.tech}}
+\vspace{0.6em}
+
+% TODO: write abstract -- do this last before submission
 
 \section{Introduction}
 
@@ -289,8 +395,10 @@ teachers do: clearly, at the right level, with examples that meet the student
 where they are.
 
 \section*{References}
+\addcontentsline{toc}{section}{References}
+\renewcommand{\baselinestretch}{1.05}\small
 
-\textbf{AI / LLM Research}
+{\sffamily\bfseries\small\color{accent}AI and LLM Research}\vspace{-0.2em}
 
 \begin{list}{}{\setlength{\leftmargin}{1.5em}\setlength{\itemindent}{-1.5em}\setlength{\itemsep}{0.3em}}
 \item Anthropic. (2024). \textit{Constitutional AI.} \url{https://www.anthropic.com/index/constitutional-ai}
@@ -301,7 +409,7 @@ where they are.
 \item Xu, W., et al. (2023). Grade-level text controls. \url{https://arxiv.org/abs/2310.10572}
 \end{list}
 
-\textbf{Cognitive Load / Educational Psychology}
+{\sffamily\bfseries\small\color{accent}Cognitive Load and Educational Psychology}\vspace{-0.2em}
 
 \begin{list}{}{\setlength{\leftmargin}{1.5em}\setlength{\itemindent}{-1.5em}\setlength{\itemsep}{0.3em}}
 \item Chi, M. T. H., \& Wylie, R. (2014). The ICAP framework. \url{https://doi.org/10.3102/0034654314542828}
@@ -311,7 +419,7 @@ where they are.
 \item Sweller, J. (1988). Cognitive load during problem solving. \textit{Cognitive Science}, 12(2), 257--285.
 \end{list}
 
-\textbf{EdTech, UX, and Other}
+{\sffamily\bfseries\small\color{accent}EdTech, UX, and Other}\vspace{-0.2em}
 
 \begin{list}{}{\setlength{\leftmargin}{1.5em}\setlength{\itemindent}{-1.5em}\setlength{\itemsep}{0.3em}}
 \item Dwivedi, Y. K., et al. (2023). Risks of generative AI. \url{https://doi.org/10.1016/j.ijinfomgt.2023.102695}
