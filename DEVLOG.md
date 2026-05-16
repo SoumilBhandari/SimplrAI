@@ -124,3 +124,22 @@ reverting all the bibtex changes. sending draft 1 as-is.
 
 ---
 
+## May 16 — 2:15am
+
+everything is done except the abstract. THE ABSTRACT. how is this still not
+done.
+
+wrote 4 drafts:
+
+1. too long (270 words, limit is ~250)
+2. too short (140 words, looks empty)
+3. way too technical, sounds like a methods section
+4. way too marketing-y, sounds like a website blurb
+
+it's 2am. final draft due tomorrow. i'll do the abstract first thing in the
+morning when im awake. setting an alarm for 7am.
+
+if i forget to write the abstract by submission time, future me, im sorry.
+
+---
+
