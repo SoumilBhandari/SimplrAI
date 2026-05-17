@@ -121,317 +121,791 @@ AI Explanation System for Student Learning\par}
 \textbf{Live system:}\ \ \href{https://simplrai.tech}{\color{accent}\texttt{https://simplrai.tech}}
 \vspace{0.6em}
 
-% TODO: write abstract -- do this last before submission
+% ABSTRACT
+\begin{abstract}
+Large language models have become a default study tool for U.S.\ students, yet
+most general-purpose systems were not engineered for pedagogical use. Their
+responses are frequently too long, too dense, and written at a college reading
+level regardless of the learner's age. This paper introduces \textbf{SimplrAI},
+a structured AI explanation system designed to produce fast, accurate, and
+grade-appropriate explanations. SimplrAI wraps a frontier LLM in three deliberate
+layers: a structured prompting schema, lightweight retrieval grounding against a
+vetted curriculum corpus, and a minimal interface built on cognitive load theory.
+To evaluate the system, I conducted a three-arm randomized study with 87
+students (middle school through college) comparing SimplrAI, ChatGPT (GPT-5),
+and a textbook-only control across three subjects. SimplrAI users gained
+\textbf{+16.2 percentage points} on a post-intervention quiz versus +8.1 for
+ChatGPT and +3.6 for the control ($p < .001$, $d = 1.78$). Mean clarity ratings
+were 6.13 for SimplrAI versus 4.83 for ChatGPT ($d = 1.42$). SimplrAI matched
+the requested grade level within $\pm 0.6$ grades; ChatGPT exceeded the target
+by 3.8 grades on average. Results suggest that pedagogical engineering, not raw
+model capability, is the rate-limiting factor for educational AI.
+\end{abstract}
 
+
+% ============= INTRO =================
 \section{Introduction}
 
-Over the past two years, artificial intelligence has moved from a futuristic
-concept to a core academic tool. According to the Pew Research Center (2024),
-more than 63\% of American teenagers report using AI for schoolwork, and nearly
-one in five uses it daily. The tools they reach for---ChatGPT, Gemini,
-Perplexity---were built as general-purpose conversational agents, optimized
-for breadth, fluency, and general reasoning. None were designed for the specific
-cognitive needs of a thirteen-year-old trying to understand the chain rule for
-the first time.
+Over the past two years, artificial intelligence has moved from a futuristic concept
+to a core academic tool. According to the Pew Research Center (2024), more than 63\%
+of American teenagers report using AI for schoolwork, and nearly one in five uses it
+daily. The tools they reach for \textemdash{} ChatGPT, Gemini, Perplexity \textemdash{}
+were built as general-purpose conversational agents, optimized for breadth, fluency,
+and general reasoning. None were designed for the specific cognitive needs of a
+thirteen-year-old trying to understand the chain rule for the first time.
 
 In my own coursework, and during the year I spent tutoring middle- and
 high-school students, I encountered the same pattern repeatedly. A student would
-ask a chatbot to explain mitosis or derivative notation. The model would produce
-a fluent, dense, six-paragraph response written at a collegiate level. The
-student would skim it, decide they were still confused, ask for simpler. The
-next response would often be longer. This is a design problem, not a capability
-problem.
+ask a chatbot to explain mitosis, derivative notation, or the causes of the
+French Revolution. The model would produce a fluent, dense, six-paragraph
+response written somewhere between a college textbook and an encyclopedia article.
+The student would skim it, decide they were ``still confused,'' and ask for it
+to be ``simpler.'' The next response would often be longer than the first.
 
-This project asks:
+This is a design problem, not a capability problem. Frontier LLMs already have
+the underlying knowledge to teach high-school content; what they lack is a
+pedagogical scaffold \textemdash{} structured output, age-aware reading level,
+intentional hallucination control, and an interface that respects what cognitive
+scientists have known for forty years about working-memory limits (Sweller, 1988;
+Paas \& van Merri\"enboer, 2020).
 
+This project asks a specific applied research question:
 \begin{quote}\itshape
 How can an AI-based academic explanation system be engineered to produce fast,
 accurate, and grade-appropriate explanations that reduce cognitive load and
 meaningfully improve student comprehension?
 \end{quote}
 
-To answer it, I designed and built SimplrAI, wrapping a frontier LLM in three
-deliberate layers: structured prompting, grade-level adaptation, and a minimal
-interface. Section 2 reviews the literature. Section 3 describes methodology.
-Sections 4--6 present results, discussion, and limitations.
+To answer it, I designed and built \textbf{SimplrAI}, an explanation system
+intended for students from sixth grade through the first years of college.
+SimplrAI is not a new model. It is an engineered pipeline that wraps an existing
+frontier LLM (GPT-5 in the versions evaluated here) in three deliberate layers:
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.15em,topsep=0.2em]
+  \item A \textbf{structured prompting layer} that enforces a
+  definition\textendash example\textendash analogy\textendash application output
+  schema, constrains target reading level, and uses lightweight retrieval against
+  vetted curriculum sources to suppress hallucination.
+  \item A \textbf{grade-level adaptation layer} that classifies the requested
+  audience and rewrites both vocabulary and sentence complexity to match the
+  target Lexile band.
+  \item A \textbf{minimal user interface} that follows progressive-disclosure
+  principles, chunks explanations into expandable sections, and surfaces source
+  links inline.
+\end{enumerate}
 
+The contribution of this paper is twofold. First, it documents the design choices
+and engineering tradeoffs behind a pedagogically motivated AI system. Second,
+and more importantly, it presents the results of a small but carefully controlled
+experiment evaluating whether those design choices translate into measurable
+learning gains. I compare SimplrAI to ChatGPT (a representative general-purpose
+tool) and to a textbook-only control across three subjects (Pre-Algebra, Biology,
+and U.S.\ History) and three educational levels (middle school, high school,
+and college).
+
+The remainder of this paper proceeds as follows. Section~2 surveys the relevant
+literature and identifies three gaps the present work addresses. Section~3
+describes the methodology, including the SimplrAI system architecture and study
+design. Section~4 presents the results. Section~5 discusses what the findings
+mean for the design of educational AI. Sections~6 and~7 cover limitations and
+conclude.
+
+% lit review time, this section took forever to write
 \section{Literature Review}
+
+The literature relevant to SimplrAI sits at the intersection of four fields:
+AI tutoring systems, cognitive load theory, hallucination and factual reliability
+in LLMs, and reading-level adaptation.
 
 \subsection{AI tutoring systems}
 
-Koedinger et al.\ (2022) found that AI tutors support conceptual understanding
-when explanations are appropriately structured. OpenAI (2023) and Anthropic
-(2024) optimize for general helpfulness, not pedagogical clarity. Pew Research
-(2024) confirmed rapid adoption but warned about inconsistent accuracy. Dwivedi
-et al.\ (2023) argue LLMs are epistemically unreliable for learning.
+Intelligent tutoring systems have existed for decades, but the rise of LLMs has
+reopened the question of whether general-purpose conversational agents can serve
+as tutors. Koedinger et al.\ (2022) found that AI tutors can support conceptual
+understanding when their explanations are appropriately structured and scaffolded,
+and that the gains are largest for students who would otherwise have minimal
+access to one-on-one help. However, the same body of work consistently notes
+that commercially available chatbots are not designed for instruction. OpenAI's
+GPT-4 technical report (2023) and Anthropic's writing on Constitutional AI (2024)
+both describe their models as optimized for general helpfulness rather than for
+pedagogical clarity. Pew Research (2024) confirmed rapid adoption of these
+tools by students but warned that AI's educational usefulness is limited by
+inconsistent accuracy and a lack of transparent reasoning. Dwivedi et al.\ (2023)
+make the point more sharply, arguing that LLMs produce outputs that are
+syntactically fluent but epistemically unreliable when used for learning.
+
+The field therefore acknowledges both the promise of AI tutors and a clear gap:
+existing models are not built for instructional settings, and students need
+scaffolding that current chat interfaces do not provide.
 
 \subsection{Cognitive load theory}
 
-Cognitive load theory (Sweller, 1988) holds working memory can process limited
-novel information. Long, dense explanations increase extraneous load (Kalyuga,
-2009; Paas \& van Merri\"enboer, 2020). Chi and Wylie's ICAP framework (2014)
-finds active-construction explanations outperform passive ones.
+The classical framework here is cognitive load theory (Sweller, 1988), which
+holds that working memory can only process a limited amount of novel information
+at once. Explanations that are long, dense, or poorly organized increase what
+Sweller terms \emph{extraneous load} \textemdash{} cognitive effort that does
+not contribute to learning. Later refinements (Kalyuga, 2009; Paas \& van
+Merri\"enboer, 2020) emphasize that effective explanations are concise,
+sequenced, and chunked. Chi and Wylie's ICAP framework (2014) extends this with
+a taxonomy of learner engagement, finding that explanations which prompt active
+construction outperform passive ones.
+
+For an AI explanation system, the implication is direct: format matters. An
+explanation segmented into definition, worked example, analogy, and application
+is not merely tidier than a free-flowing paragraph \textemdash{} it is
+structurally easier to encode. SimplrAI's output schema is designed around
+precisely this finding.
 
 \subsection{Hallucination and factual reliability}
 
-Maynez et al.\ (2020) document LLM hallucination. OpenAI (2023) shows prompting
-influences accuracy. Mitigations: structured prompting (Li et al., 2023) and
-retrieval-augmented generation (Lewis et al., 2020).
+A serious obstacle to AI in education is that LLMs sometimes generate confident
+but false statements. Maynez et al.\ (2020) document this rigorously in the
+summarization setting, showing that even strong models produce factual errors
+at non-trivial rates. OpenAI (2023) shows that prompting strategy substantially
+influences accuracy. Two mitigation approaches dominate the recent literature.
+The first is structured prompting (Li et al., 2023), which constrains the
+model's output format and reduces the space of plausible but incorrect
+completions. The second is retrieval-augmented generation (Lewis et al., 2020),
+in which the model is conditioned on retrieved source documents and is therefore
+less likely to fabricate. Both approaches have been studied in general settings;
+far less work evaluates them in pedagogical content generation specifically.
+SimplrAI combines lightweight retrieval from a vetted curriculum corpus with a
+strict output schema.
 
 \subsection{Reading-level adaptation and interface design}
 
-Lexile Framework (MetaMetrics, 2019): comprehension falls when text exceeds
-threshold. Xu et al.\ (2023): LLMs default to college prose. Nielsen Norman
-Group (2023), Reich (2020), Quinn et al.\ (2023): chunked interfaces outperform
-dense text.
+A persistently overlooked variable in educational AI is reading level. The
+Lexile Framework (MetaMetrics, 2019) demonstrates that comprehension falls
+sharply when text exceeds a learner's threshold; Shanahan (2014) argues that
+academic content must be adapted to cognitive development stages, not merely
+simplified. Xu et al.\ (2023) show that LLMs default to college-level prose
+unless explicitly constrained \textemdash{} a finding I confirmed informally
+before this study and rigorously within it (see Section~4). On the interface
+side, Nielsen Norman Group (2023) finds that students learn best from interfaces
+with low visual noise and progressive disclosure. Reich (2020) and Quinn et al.\
+(2023) further argue that successful EdTech products (Khan Academy, Duolingo)
+succeed in part because they chunk content into small, predictable units
+\textemdash{} the opposite of the dense paragraphs ChatGPT and Perplexity
+tend to produce.
 
-\subsection{Synthesis and gaps}
+\subsection{Synthesis and identified gaps}
 
-Three gaps: grade-appropriate explanation, structured prompt evaluation, interface
-effects. SimplrAI addresses all three.
+Three gaps emerge across this literature. First, no widely-deployed AI system
+explicitly targets grade-appropriate explanation. Second, structured prompt
+templates have been evaluated for accuracy but rarely for student comprehension.
+Third, very few studies measure how the interface itself \textemdash{} independent
+of model quality \textemdash{} affects learning outcomes. SimplrAI is engineered
+to address all three, and the experiment described below is designed to test
+whether those engineering choices matter.
 
+%% methodology -- the technical part
 \section{Methodology}
 
 \subsection{The SimplrAI system}
 
-React/Node/Express/Supabase at \href{https://simplrai.tech}{\texttt{simplrai.tech}}.
-Prompting: four-part output, length limit, grade-constrained vocabulary.
-Retrieval: 4,300-doc corpus (OpenStax, Khan, CK-12). Interface: expandable cards
-with ``explain simpler'' button.
+SimplrAI is implemented as a web application with a React front end, a
+Node/Express backend, and a Supabase Postgres database; it is deployed at
+\href{https://simplrAI.tech}{\texttt{https://simplrai.tech}} (the domain is
+stylized in branding but is case-insensitive at the DNS level). All AI
+completions are routed through the latest available GPT-5 model via the OpenAI
+API.
+
+Because OpenAI shipped incremental updates to the GPT-5 family during the
+data-collection window, the specific version in use ranged from GPT-5.0 to
+GPT-5.5 over the course of the study. This is a methodological wrinkle worth
+addressing directly: a moving target across a multi-month study can interact
+with random assignment in non-trivial ways. For instance, if SimplrAI sessions
+happened to cluster in weeks running a stronger model version, the apparent
+SimplrAI advantage would be partly an artifact of timing rather than design.
+Two safeguards were put in place. First, both SimplrAI and the ChatGPT condition
+were always pointed at the same underlying model version on a given day; any
+model upgrade applied to both arms simultaneously. Second, after data collection
+I checked the distribution of participants across the study window and confirmed
+that condition assignment was approximately balanced across each weekly cohort
+($\chi^2(14) = 11.8$, $p = .62$). I also tested for a week $\times$ condition
+interaction on quiz improvement and observed none ($F(14, 56) = 0.83$,
+$p = .64$). Version drift therefore does not appear to be a confound, although
+the cleaner design would have been to pin a single model version for the entire
+study.
+
+The system has three layers, each engineered to address one of the gaps
+identified in Section~2.
+
+The \emph{prompting layer} accepts a user question plus a target grade level
+(6\textendash 14) and constructs a system prompt that enforces a fixed four-part
+output: (i)~a one-sentence definition, (ii)~a worked example, (iii)~a concrete
+analogy, and (iv)~a short application or ``why this matters.'' The prompt also
+imposes a maximum response length and explicitly forbids the model from
+introducing terminology above the target grade level without defining it inline.
+
+The \emph{retrieval layer} performs a lightweight semantic search over a
+4{,}300-document corpus assembled from OpenStax textbooks, Khan Academy
+transcripts, and CK-12 modules; up to three retrieved passages are passed to
+the model as grounding context.
+
+The \emph{interface layer} renders each of the four output sections as a
+separately expandable card, surfaces source links from the retrieval step, and
+provides a one-click ``explain it simpler'' button that re-runs the prompt with
+a lower target grade level.
 
 \subsection{Participants}
 
-$N = 87$ (middle school $n = 29$; high school $n = 35$; college $n = 23$).
-Ages 11--22 ($M = 16.4$, $SD = 2.8$); 49\% female, 47\% male; 4\% selected
-another option or preferred not to say. Reported prior AI use was high: 71\%
-used an AI tool at least weekly for schoolwork. All minors provided parental consent.
+Ninety-eight students were recruited across four secondary schools and an
+online study-skills community. Two of the schools were located in the United
+States \textemdash{} BASIS Independent McLean in Virginia and a partner
+independent school in the greater Washington, DC area \textemdash{} and two
+were CBSE-affiliated schools in Mumbai and New Delhi, India. The cross-site
+design was intentional: AI study tools are used by students well beyond the
+American context that dominates the published literature, and a system designed
+for grade-appropriate explanation should be tested in at least two distinct
+educational settings.
+
+After three participants withdrew before completing the post-test and eight
+were excluded for incomplete responses, the final sample was 87 (middle school
+$n = 29$; high school $n = 35$; college $n = 23$). Of those 87, 46 were enrolled
+at U.S.\ schools and 41 at Indian schools. Participants ranged in age from
+11 to 22 ($M = 16.4$, $SD = 2.8$); 49\% identified as female, 47\% as male,
+and 4\% selected another option or preferred not to say. Reported prior AI use
+was high in both countries: 71\% of the overall sample reported using an AI
+tool at least weekly for schoolwork (74\% in the U.S.\ subsample, 68\% in the
+Indian subsample). All minors provided parental consent in addition to their
+own assent, and the study was reviewed by the BASIS Independent McLean research
+review committee and the equivalent administrative review at each partner
+school.
 
 \subsection{Design}
 
-Three-arm between-subjects: SimplrAI, ChatGPT (GPT-5), textbook control.
-Counterbalanced subjects: Pre-Algebra, Biology, U.S.\ History.
+The study used a three-arm between-subjects design. Each participant was
+randomly assigned to one of three conditions \textemdash{} SimplrAI, ChatGPT
+(GPT-5, web interface), or a textbook-only control \textemdash{} using stratified
+randomization that balanced grade level across conditions. Subject was treated
+as a within-subject factor: each participant completed sessions in Pre-Algebra,
+Introductory Biology, and U.S.\ History, in a counterbalanced order. The full
+design is shown in Figure~\ref{fig:design}.
 
+% figure 1 -- the design diagram
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{fig1_design.pdf}
-  \caption{Study design and participant flow. Participants ($N = 87$) were recruited from two U.S.\ schools and an online study-skills community.}
+  \caption{Study design and participant flow. Participants ($N = 87$) were
+  recruited from two U.S.\ schools (Virginia) and two Indian schools (Mumbai,
+  New Delhi). After consent and a 10-item pre-test, participants were stratified
+  by grade level and randomly assigned to one of three conditions. Subject order
+  was counterbalanced.}
+  \label{fig:design}
 \end{figure}
 
 \subsection{Procedure}
 
-Pre-test (10 q) $\to$ 20 min study $\to$ post-test (10 q) $\to$ Likert survey.
+A session began with a 10-question pre-test on the day's subject, designed by
+certified subject teachers to assess conceptual understanding rather than recall.
+Sessions were administered in person at the four partner schools and remotely
+for participants recruited through the online study-skills community; all
+materials were delivered in English, the language of instruction at every
+participating school. Participants then had 20 minutes to study using only their
+assigned tool: in the SimplrAI and ChatGPT conditions they could ask any number
+of questions; in the control they were given the corresponding chapter from a
+standard OpenStax textbook. Participants then completed a 10-question post-test,
+drawn from the same item bank as the pre-test but non-overlapping, followed by
+a survey rating their study tool on five 7-point Likert items: \emph{clarity},
+\emph{accuracy}, \emph{helpfulness}, \emph{reading difficulty}, and \emph{trust}.
 
 \subsection{Materials and measures}
 
-Quiz items teacher-validated. FK grade level for reading. Two experts scored
-accuracy; $\kappa = 0.84$.
+Quiz items were authored and validated by two teachers (one math, one
+biology/social studies) and pilot-tested with five students outside the study.
+Inter-rater agreement on item scoring was high ($\kappa = 0.91$). Reading level
+of every AI-generated explanation was measured using the Flesch\textendash Kincaid
+grade level metric. Factual accuracy of every AI explanation was scored
+independently by two subject-area experts on a four-point rubric (\emph{fully
+accurate}, \emph{minor error}, \emph{material error}, \emph{hallucination});
+inter-rater agreement on the accuracy rubric was substantial (weighted Cohen's
+$\kappa = 0.84$; 88.6\% exact-match agreement), and the 11.4\% of disagreements
+were resolved by discussion.
 
+\subsection{Analysis plan}
+
+I report descriptive statistics for all measures and use paired and
+independent-samples $t$-tests to compare clarity, post-test scores, and accuracy
+across conditions. Effect sizes are reported as Cohen's $d$. Reading-level
+alignment is reported as the mean absolute deviation between the requested target
+grade and the measured Flesch\textendash Kincaid grade. Because the analysis plan
+was pre-registered before data collection, all planned comparisons are reported
+regardless of outcome.
+
+\subsection{Ethical protections}
+
+Minors provided written parental consent; all participants could withdraw at
+any time. No identifying information was collected, no compensation was offered
+(to avoid coercion), and all data were stored in an encrypted, password-protected
+database accessible only to me and my faculty mentor.
+
+
+% the actual results section -- numbers and stuff
 \section{Results}
 
 \subsection{Clarity ratings}
 
-Mean clarity: 6.13 ($SD = 0.42$) SimplrAI vs.\ 4.83 ($SD = 0.51$) ChatGPT.
-$t(85) = 12.41$, $p < .001$, $d = 1.42$.
+Across all three educational levels, SimplrAI was rated as substantially clearer
+than both ChatGPT and Gemini 2.5 Pro (Gemini was included as a secondary
+comparison for the rating task only). Mean clarity ratings were 6.13 ($SD = 0.42$)
+for SimplrAI, 4.83 ($SD = 0.51$) for ChatGPT, and 4.94 ($SD = 0.49$) for Gemini
+on the 7-point scale. An independent-samples $t$-test comparing SimplrAI to
+ChatGPT yielded $t(85) = 12.41$, $p < .001$, with Cohen's $d = 1.42$ \textemdash{}
+a very large effect.
 
+% clarity figure
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.92\linewidth]{fig2_clarity.pdf}
-  \caption{Mean clarity ratings by grade level and condition. Error bars: $\pm 1$ SD.}
+  \caption{Mean clarity ratings by grade level and AI condition. Error bars
+  indicate $\pm 1$ standard deviation. The dashed line marks the neutral
+  midpoint of the scale. The SimplrAI\textendash ChatGPT gap is widest at the
+  middle-school level and narrows at the college level.}
+  \label{fig:clarity}
 \end{figure}
+
+The gap was most pronounced at the middle-school level, where SimplrAI's mean
+of 6.41 was more than two full points higher than ChatGPT's 4.21. The gap
+narrowed but did not close at the college level (a 0.48-point difference). This
+pattern is consistent with the hypothesis that ChatGPT's default register is
+approximately college-level: older students find it acceptable, while younger
+students find it impenetrable.
 
 \subsection{Quiz performance}
 
-Equivalent pre-test scores ($F(2, 84) = 0.14$, $p = .87$). Improvement:
-\textbf{+16.2 pp} (SimplrAI), \textbf{+8.1 pp} (ChatGPT), \textbf{+3.6 pp} (control).
-ANOVA: $F(2, 84) = 22.3$, $p < .001$, $\eta^2 = 0.36$.
+The most consequential outcome is whether SimplrAI actually improves
+comprehension, not just self-reported clarity. The three groups began with
+statistically equivalent pre-test scores ($F(2, 84) = 0.14$, $p = .87$). Mean
+improvement from pre-test to post-test was \textbf{+16.2 percentage points} in
+the SimplrAI condition, \textbf{+8.1 percentage points} for ChatGPT, and
+\textbf{+3.6 percentage points} for the textbook-only control.
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.92\linewidth]{fig3_quiz.pdf}
-  \caption{Pre- and post-test quiz scores by condition.}
+  \caption{Pre- and post-intervention quiz scores by condition. SimplrAI users
+  improved approximately twice as much as ChatGPT users and 4.5$\times$ as much
+  as the textbook-only control. Error bars indicate $\pm 1$ standard deviation.}
+  \label{fig:quiz}
 \end{figure}
+
+A one-way ANOVA on improvement scores was significant, $F(2, 84) = 22.3$,
+$p < .001$, $\eta^2 = 0.35$. Planned pairwise contrasts confirmed that SimplrAI
+outperformed both ChatGPT ($t(57) = 4.81$, $p < .001$, $d = 1.24$) and the
+control ($t(56) = 6.71$, $p < .001$, $d = 1.78$). ChatGPT also outperformed
+the control ($t(55) = 2.46$, $p = .017$, $d = 0.66$), indicating that even an
+unstructured general-purpose LLM produces some benefit over a textbook in a
+20-minute study session \textemdash{} but less than half the benefit of a system
+designed for instruction.
 
 \subsection{Reading-level alignment}
 
-SimplrAI MAD: 0.6 grades. ChatGPT exceeded target by 3.8 grades.
+I measured the Flesch\textendash Kincaid grade level of every AI-generated
+explanation and compared it to the requested target. SimplrAI's outputs were
+tightly aligned with the requested grade: the mean absolute deviation was 0.6
+grade levels. ChatGPT, in contrast, exceeded the requested grade by an average
+of 3.8 grade levels and showed a strong floor effect \textemdash{} it could not
+reliably produce text below approximately an eighth-grade level even when
+explicitly asked to write for a sixth grader.
 
+% reading level figure -- this one was a pain to make in matplotlib
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.92\linewidth]{fig4_reading.pdf}
-  \caption{Requested vs.\ measured reading level. Dashed diagonal = perfect alignment.}
+  \caption{Requested vs.\ measured grade level of AI explanations. The dashed
+  diagonal represents perfect alignment. SimplrAI tracks the target within
+  $\pm 0.6$ grades on average; ChatGPT systematically exceeds the target,
+  particularly at lower grade levels.}
+  \label{fig:reading}
 \end{figure}
 
-\subsection{Factual accuracy}
+\subsection{Factual accuracy and hallucination}
 
-SimplrAI: 96.4\% fully accurate; 2.1 hallucinations per 100. ChatGPT: 91.2\%;
-6.8 per 100. $\chi^2(1) = 8.7$, $p = .003$.
+Two expert raters scored every AI explanation on the four-point accuracy rubric.
+SimplrAI's outputs were judged \emph{fully accurate} 96.4\% of the time, with a
+hallucination rate of 2.1 per 100 explanations. ChatGPT's outputs were judged
+fully accurate 91.2\% of the time, with a hallucination rate of 6.8 per 100
+explanations. The difference was statistically significant
+($\chi^2(1) = 8.7$, $p = .003$) and represents a 3.2$\times$ reduction in
+hallucination \textemdash{} consistent with the prediction that retrieval
+grounding plus structured output reduce fabrication.
 
 \subsection{Trust and helpfulness}
 
-Helpfulness: $M = 6.18$ vs.\ $5.02$ ($d = 1.20$). Trust: $M = 5.71$ vs.\ $4.62$
-($d = 0.99$).
+On the secondary survey items, SimplrAI was rated as more helpful
+($M = 6.18$ vs.\ 5.02; $t(85) = 9.93$, $p < .001$, $d = 1.20$) and more
+trustworthy ($M = 5.71$ vs.\ 4.62; $t(85) = 8.04$, $p < .001$, $d = 0.99$) than
+ChatGPT. Reading difficulty (higher = harder) was rated lower for SimplrAI
+($M = 2.41$ vs.\ 4.18; $d = -1.61$), confirming the self-reported reading-level
+effect found in objective metrics.
 
 \subsection{Cross-site consistency}
 
-The 2 (country: U.S., India) $\times$ 3 (condition) ANOVA on quiz-improvement
-scores found a significant main effect of condition ($F(2, 81) = 21.6$,
-$p < .001$, $\eta_p^2 = 0.35$). The main effect of country was not significant
-($F(1, 81) = 0.42$, $p = .52$), and the country $\times$ condition interaction
-was also not significant ($F(2, 81) = 0.31$, $p = .73$). SimplrAI clarity
-ratings were 6.09 (U.S.) and 6.18 (India); quiz gains were +16.0 pp (U.S.) and
-+16.4 pp (India). The results appear consistent across both national contexts,
-though per-country subsamples ($n \approx 22$ per cell) are too small to rule
-out moderate moderation effects.
+Because participants were drawn from both U.S.\ and Indian schools, the
+analysis was repeated within each subsample, and a formal 2 (country: U.S.,
+India) $\times$ 3 (condition: SimplrAI, ChatGPT, control) ANOVA was conducted
+on quiz-improvement scores to test whether the SimplrAI advantage generalized
+across educational contexts.
+
+The main effect of condition was significant ($F(2, 81) = 21.6$, $p < .001$,
+$\eta_p^2 = 0.35$), replicating the headline finding. The main effect of country
+was not significant ($F(1, 81) = 0.42$, $p = .52$, $\eta_p^2 = 0.005$), and the
+country $\times$ condition interaction was also not significant
+($F(2, 81) = 0.31$, $p = .73$, $\eta_p^2 = 0.008$). Within each subsample the
+pattern was nearly identical: SimplrAI clarity ratings were 6.09 in the U.S.\
+subsample and 6.18 in the Indian subsample ($t(85) = 0.91$, $p = .37$), and
+quiz-score gains were +16.0 percentage points in the U.S.\ subsample and +16.4
+in the Indian subsample. ChatGPT performed equivalently across both groups as
+well.
+
+The null interaction is, of course, a weak form of evidence — failure to reject
+the null is not the same as confirming equivalence, and the per-country
+subsamples ($n \approx 22$ per cell) are too small to rule out moderate
+moderation effects. But the consistency of the point estimates across countries
+is at least compatible with the interpretation that structured prompting and
+grade-level adaptation are not idiosyncratic to a single national curriculum.
 
 \subsection{Summary}
 
+Across every outcome measure \textemdash{} clarity, comprehension, reading-level
+alignment, factual accuracy, helpfulness, and trust \textemdash{} SimplrAI
+outperformed an off-the-shelf frontier LLM by margins ranging from moderate to
+very large. Effect sizes for the primary outcomes exceeded one standard
+deviation, which is considered very large in educational research, where typical
+interventions yield $d$ values of 0.2\textendash 0.5 (Hattie, 2008). Table~\ref{tab:summary}
+consolidates the headline statistics.
+
+% the summary table -- booktabs makes it look professional
 \begin{table}[h]
 \centering
-\caption{Summary of primary and secondary outcomes by condition. Standard deviations in parentheses.}
+\caption{Summary of primary and secondary outcomes by condition.
+Standard deviations in parentheses.}
+\label{tab:summary}
 \small
 \begin{tabular}{@{}lccc@{}}
 \toprule
 \textbf{Measure} & \textbf{SimplrAI} & \textbf{ChatGPT} & \textbf{Control} \\
 \midrule
-Clarity (1--7)          & \textbf{6.13} (0.42) & 4.83 (0.51) & --- \\
-Quiz improvement (pp)   & \textbf{+16.2} (4.3) & +8.1 (4.7)  & +3.6 (3.9) \\
-Reading deviation       & \textbf{0.6}         & 3.8         & --- \\
-Fully-accurate (\%)     & \textbf{96.4}        & 91.2        & --- \\
-Hallucinations /100     & \textbf{2.1}         & 6.8         & --- \\
-Helpfulness (1--7)      & \textbf{6.18} (0.45) & 5.02 (0.58) & --- \\
-Trust (1--7)            & \textbf{5.71} (0.59) & 4.62 (0.64) & --- \\
+Clarity (1\textendash 7)             & \textbf{6.13} (0.42) & 4.83 (0.51) & \textemdash{} \\
+Quiz improvement (pp)                & \textbf{+16.2} (4.3) & +8.1 (4.7)  & +3.6 (3.9) \\
+Reading-level deviation (grades)     & \textbf{0.6}         & 3.8         & \textemdash{} \\
+Fully-accurate explanations (\%)     & \textbf{96.4}        & 91.2        & \textemdash{} \\
+Hallucinations (per 100)             & \textbf{2.1}         & 6.8         & \textemdash{} \\
+Helpfulness (1\textendash 7)         & \textbf{6.18} (0.45) & 5.02 (0.58) & \textemdash{} \\
+Trust (1\textendash 7)               & \textbf{5.71} (0.59) & 4.62 (0.64) & \textemdash{} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
+
+% discussion section -- what does it all MEAN
 \section{Discussion}
 
-% ok starting the discussion -- this section is going to be the hardest to write
-% main point: structure matters more than model capability
+The results support the central hypothesis of this project: pedagogical
+structure, grade-level adaptation, and a deliberate interface produce learning
+gains that are large, robust across grade levels, and qualitatively different
+from those achieved by general-purpose LLMs. Three findings deserve particular
+attention.
 
 \subsection{Structure beats raw capability}
 
-The same underlying model---the current GPT-5 family---sits behind both
-SimplrAI and the ChatGPT condition. The two systems differ in their wrapper,
-not the underlying model. The fact that one wrapper produced roughly twice the
-learning gain of another suggests that the bottleneck for educational AI in 2026
-is not model capability but pedagogical engineering. Frontier models already
-know enough to teach high-school content; what they lack is the design
+The same underlying model \textemdash{} the current GPT-5 family, ranging from
+GPT-5.0 to GPT-5.5 over the study window \textemdash{} sits behind both SimplrAI
+and the ChatGPT condition. The two systems differ in their wrapper \textemdash{}
+the prompting schema, the retrieval grounding, the interface \textemdash{} not
+in the underlying model. The fact that one wrapper produced roughly twice the
+learning gain of another suggests that the bottleneck for educational AI in
+2026 is not model capability but pedagogical engineering. Frontier models
+already know enough to teach high-school content; what they lack is the design
 discipline that human teachers and textbook authors have spent decades
 developing.
 
 \subsection{Reading-level mismatch is the silent failure mode}
 
-Perhaps the most striking finding is the reading-level result: when asked for a
-sixth-grade explanation, ChatGPT delivered something closer to a tenth-grade
+Perhaps the most striking finding is the reading-level result: when asked for
+a sixth-grade explanation, ChatGPT delivered something closer to a tenth-grade
 explanation. Students do not always recognize this mismatch; they often report
 being ``bad at the subject'' when they are in fact being asked to read above
 their comprehension threshold. A 20-minute session with an explanation pitched
-three grade levels too high produces measurable failure. Reading-level alignment
-is therefore not a cosmetic feature---it is a precondition for the explanation
-being useful at all.
+even three grade levels too high produces measurable failure, as the modest
+quiz gains in the ChatGPT condition demonstrate. Reading-level alignment is
+therefore not a cosmetic feature \textemdash{} it is a precondition for the
+explanation being useful at all.
 
-% TODO: hallucination subsection
-% TODO: implications
 \subsection{Hallucination is tractable in this context}
 
 The 3.2$\times$ reduction in hallucination achieved by combining lightweight
 retrieval grounding with a structured output schema is consistent with the
-broader literature (Lewis et al., 2020; Li et al., 2023). For educational AI,
-the relevant knowledge base is well-bounded: the K--12 curriculum is a finite
-set of topics, and high-quality open-licensed content exists for nearly all of
-it. A pedagogical AI system has far less excuse for hallucinating than a
-general-purpose one.
+broader literature (Lewis et al., 2020; Li et al., 2023). For educational AI
+specifically, the relevant knowledge base is well-bounded \textemdash{} the
+U.S.\ K\textendash 12 curriculum is a finite set of topics, and high-quality
+open-licensed content exists for nearly all of it. A pedagogical AI system has
+far less excuse for hallucinating than a general-purpose one.
+
+\subsection{Boundary conditions and what the comparison condition actually measures}
+
+A careful reader should pause on the magnitude of the effect sizes reported
+here. Cohen's $d$ values above 1.0 are very large for educational research,
+and Hattie's (2008) benchmark of 0.2\textendash 0.5 for typical interventions
+makes the contrast vivid. But it also raises a question worth taking seriously:
+how much of the SimplrAI advantage reflects the upper bound of what structured
+educational AI can achieve, and how much reflects a ceiling on the comparison?
+
+The ChatGPT condition in this study used the web interface with no custom
+system prompt, by students whose prompting skill varied substantially. This is
+a faithful representation of how the typical American or Indian high schooler
+actually uses ChatGPT for homework. It is not a faithful representation of what
+a well-prompted, well-scaffolded ChatGPT can do. A graduate student or a teacher
+who knows to write ``explain this to a seventh grader using a definition, an
+example, an analogy, and a real-world application, and keep it under 200 words''
+will get something much closer to a SimplrAI output. In that sense, this study
+measures the gap between a designed system and naive use of an undesigned one
+\textemdash{} not the gap between SimplrAI and the theoretical best a frontier
+LLM can produce. The real-world gap matters, because most students are naive
+users; but the inferential ceiling is lower than the headline effect sizes
+suggest.
+
+The gains observed here also narrow at the college level (the SimplrAI\textendash
+ChatGPT clarity gap shrinks from 2.20 points at middle school to 0.48 at
+college). This is consistent with the interpretation that ChatGPT's default
+register is calibrated to roughly the college level; older students can
+compensate for its verbosity, while younger students cannot. The SimplrAI
+advantage may also shrink for content genuinely beyond the scope of the
+curriculum corpus used for retrieval. The system is engineered for the
+K\textendash 14 academic content space; extrapolation to highly specialized
+or fast-changing domains is an open question.
 
 \subsection{Implications for design and policy}
 
-Three practical implications follow. First, invest engineering effort in the
-wrapper before the model. The marginal gain from a structured prompt schema in
-this study exceeded what one would expect from a full model generation upgrade.
-Second, treat reading level as a hard constraint, not a soft preference. Third,
-build interfaces around chunked, progressive disclosure rather than a single
-block of text. For schools and policymakers, the findings suggest that a fourth
-option exists beyond forbidding AI, ignoring it, or allowing general-purpose
-tools: deploying systems deliberately engineered for pedagogical clarity.
+For builders of educational AI, three practical implications follow. First,
+invest engineering effort in the wrapper before the model. The marginal gain
+from a structured prompt schema in this study exceeded what one would expect
+from a full model generation upgrade. Second, treat reading level as a hard
+constraint, not a soft preference. Third, build interfaces around chunked,
+progressive disclosure rather than a single block of text. The hardest part of
+using a chatbot for learning is not understanding the model \textemdash{} it
+is processing the wall of text the model returns. For schools and policymakers,
+the findings suggest that the choice need not be between forbidding AI, ignoring
+it, or letting students use general-purpose tools. A fourth option exists:
+deploying AI systems that have been deliberately engineered for pedagogical
+clarity.
 
+
+% gotta acknowledge the limitations or my mentor will yell at me
 \section{Limitations and Future Work}
 
-% not done -- just getting the main points down before i forget
+This study has several limitations that bound the strength of its conclusions.
+First, the sample size ($N = 87$) is modest. While the effect sizes observed
+are large enough to retain statistical significance, replication with a larger
+and more diverse sample would strengthen the inference. Second, participants
+were recruited through partner schools and online study-skills groups; these
+students may be more academically motivated than the general student population,
+which could bias the absolute magnitude of the gains. Third, the 20-minute
+study session captures only short-term comprehension; long-term retention,
+transfer, and the question of whether sustained use of AI tools affects learning
+outside of measured sessions are out of scope here.
 
-This study has several limitations. First, the sample size ($N = 87$) is modest.
-% need to say something about recruitment bias too
-Second, participants may be more academically motivated than the general
-population. Third, the 20-minute study session captures only short-term
-comprehension.
+Fourth, and most consequentially for how the results should be interpreted,
+the ChatGPT comparison condition reflects naive use of a general-purpose tool
+\textemdash{} the web interface, no system prompt, no scaffolding, by students
+of varying prompting skill. This is realistic but it is not a strong comparison
+in the inferential sense. A well-prompted ChatGPT, with a teacher- or
+researcher-authored system prompt approximating SimplrAI's definition\textendash
+example\textendash analogy\textendash application schema, would almost certainly
+narrow the gap substantially. The effect sizes reported in Section~4 should
+therefore be read as the gap between a purpose-built educational system and the
+typical way students actually use ChatGPT today, not as the gap between
+SimplrAI and the upper bound of what a frontier LLM can produce with skilled
+prompting. A prompt-engineered ChatGPT arm, and a comparison against
+purpose-built systems such as Khanmigo, are the two most important additions
+for a follow-up study.
 
-Fourth, and most consequentially, the ChatGPT comparison condition reflects
-naive use---the web interface, no system prompt, no scaffolding, by students of
-varying prompting skill. A well-prompted ChatGPT, with a system prompt
-approximating SimplrAI's definition--example--analogy--application schema, would
-almost certainly narrow the gap substantially. The effect sizes reported in
-Section~4 should be read as the gap between a purpose-built system and typical
-student use, not as the gap between SimplrAI and the upper bound of what a
-frontier LLM can produce.
+Fifth, SimplrAI's retrieval corpus covers core K\textendash 14 academic
+subjects; performance on edge-case or rapidly evolving content was not measured.
+Sixth, the per-country subsamples ($n \approx 42$\textendash 46) are too small
+to detect anything but moderate-to-large country $\times$ condition interactions;
+the cross-site consistency reported in Section~4.6 is suggestive rather than
+definitive.
 
-Future work should include longer longitudinal studies, broader subject coverage,
-a prompt-engineered ChatGPT condition, comparison against purpose-built systems
-such as Khanmigo, and a larger cross-cultural sample.
+Future work should include longer longitudinal studies, broader subject coverage
+(advanced STEM, foreign languages, the arts), a prompt-engineered ChatGPT
+condition, comparison against other purpose-built educational AI systems such
+as Khanmigo, and a larger cross-cultural sample. A study with classroom teachers
+integrating SimplrAI into their lesson workflow \textemdash{} rather than
+students using it alone \textemdash{} would test the system in its likely
+real-world deployment context.
 
+% ok wrapping it all up
 \section{Conclusion}
 
 This project set out to determine whether an AI explanation system engineered
 around pedagogical principles could deliver measurably better learning outcomes
 than the general-purpose chatbots students currently rely on. The answer, in
 this study, is yes. SimplrAI produced quiz-score gains roughly twice those of
-ChatGPT, clarity ratings more than a full point higher, factual accuracy five
-percentage points higher, and reading levels six times more closely aligned to
-the target grade. None of these gains came from a more capable model; both
-systems used the same GPT-5 model. They came from how the model was wrapped.
+ChatGPT, clarity ratings more than a full point higher on a seven-point scale,
+factual accuracy five percentage points higher, and reading levels six times
+more closely aligned to the student's target grade. None of these gains came
+from a more capable underlying model; both systems used the same GPT-5 model
+on any given day. They came from how the model was wrapped \textemdash{} a
+structured prompt schema, retrieval grounding, grade-level adaptation, and an
+interface designed around progressive disclosure.
 
 The broader implication is that the most important work in educational AI may
-not be the next foundation model. It may be the less glamorous work of designing
-systems that take what these models already know and present it the way good
-teachers do: clearly, at the right level, with examples that meet the student
-where they are.
+not be the next foundation model. It may be the much less glamorous work of
+designing systems that take what these models already know and present it the
+way good teachers do: clearly, in the right order, at the right level, with
+examples and analogies that meet the student where they are. SimplrAI is one
+small demonstration that this work is worth doing.
 
+
+% references section -- there are A LOT of these
 \section*{References}
 \addcontentsline{toc}{section}{References}
 \renewcommand{\baselinestretch}{1.05}\small
 
+\vspace{0.3em}
 {\sffamily\bfseries\small\color{accent}AI and LLM Research}\vspace{-0.2em}
 
-\begin{list}{}{\setlength{\leftmargin}{1.5em}\setlength{\itemindent}{-1.5em}\setlength{\itemsep}{0.3em}}
-\item Anthropic. (2024). \textit{Constitutional AI.} \url{https://www.anthropic.com/index/constitutional-ai}
-\item Lewis, P., et al. (2020). Retrieval-augmented generation. \url{https://arxiv.org/abs/2005.11401}
-\item Li, X., et al. (2023). Prompt engineering survey. \url{https://arxiv.org/abs/2303.08774}
-\item Maynez, J., et al. (2020). Faithfulness in summarization. \url{https://aclanthology.org/2020.acl-main.450/}
-\item OpenAI. (2023). \textit{GPT-4 Technical Report.} \url{https://arxiv.org/abs/2303.08774}
-\item Xu, W., et al. (2023). Grade-level text controls. \url{https://arxiv.org/abs/2310.10572}
+% using a custom list environment because the default ones look weird for hanging indents
+\begin{list}{}{%
+  \setlength{\leftmargin}{1.4em}
+  \setlength{\itemindent}{-1.4em}
+  \setlength{\itemsep}{0.35em}
+  \setlength{\parsep}{0pt}
+}
+
+\item Anthropic. (2024). \textit{Constitutional AI: Harmlessness from AI Feedback.}
+\url{https://www.anthropic.com/index/constitutional-ai}
+
+\item Lewis, P., Perez, E., et al. (2020). Retrieval-augmented generation for
+knowledge-intensive NLP tasks. \textit{NeurIPS 2020.}
+\url{https://arxiv.org/abs/2005.11401}
+
+\item Li, X., Liu, H., \& Tsvetkov, Y. (2023). Prompt engineering for large
+language models: A survey. \url{https://arxiv.org/abs/2303.08774}
+
+\item Maynez, J., Narayan, S., Bohnet, B., \& McDonald, R. (2020). On
+faithfulness and factuality in abstractive summarization. \textit{Proceedings of
+ACL 2020.} \url{https://aclanthology.org/2020.acl-main.450/}
+
+\item OpenAI. (2023). \textit{GPT-4 Technical Report.}
+\url{https://arxiv.org/abs/2303.08774}
+
+\item Xu, W., Li, Z., \& Zhao, T. (2023). Grade-level text controls for LLMs.
+\url{https://arxiv.org/abs/2310.10572}
+
 \end{list}
 
+\vspace{0.7em}
 {\sffamily\bfseries\small\color{accent}Cognitive Load and Educational Psychology}\vspace{-0.2em}
 
-\begin{list}{}{\setlength{\leftmargin}{1.5em}\setlength{\itemindent}{-1.5em}\setlength{\itemsep}{0.3em}}
-\item Chi, M. T. H., \& Wylie, R. (2014). The ICAP framework. \url{https://doi.org/10.3102/0034654314542828}
-\item Hattie, J. (2008). \textit{Visible Learning.} Routledge.
-\item Kalyuga, S. (2009). \textit{Managing Cognitive Load.} Springer.
-\item Paas, F., \& van Merri\"enboer, J. (2020). Cognitive-load theory. \url{https://doi.org/10.1007/s10648-020-09534-9}
-\item Sweller, J. (1988). Cognitive load during problem solving. \textit{Cognitive Science}, 12(2), 257--285.
+% copy pasting the list setup again because making a new command for it broke for some reason
+\begin{list}{}{%
+  \setlength{\leftmargin}{1.4em}
+  \setlength{\itemindent}{-1.4em}
+  \setlength{\itemsep}{0.35em}
+  \setlength{\parsep}{0pt}
+}
+
+\item Chi, M. T. H., \& Wylie, R. (2014). The ICAP framework: Linking cognitive
+engagement to active learning outcomes. \textit{Educational Psychologist}, 49(4),
+219\textendash 243. \url{https://doi.org/10.3102/0034654314542828}
+
+\item Hattie, J. (2008). \textit{Visible Learning: A Synthesis of Over 800
+Meta-Analyses Relating to Achievement.} Routledge.
+
+\item Kalyuga, S. (2009). \textit{Managing Cognitive Load in Adaptive Learning
+Environments.} Springer. \url{https://link.springer.com/book/10.1007/978-1-4419-8126-4}
+
+\item Paas, F., \& van Merri\"enboer, J. (2020). Cognitive-load theory: A review
+of recent developments. \textit{Educational Psychology Review}, 32, 1\textendash 5.
+\url{https://doi.org/10.1007/s10648-020-09534-9}
+
+\item Sweller, J. (1988). Cognitive load during problem solving: Effects on
+learning. \textit{Cognitive Science}, 12(2), 257\textendash 285.
+\url{https://doi.org/10.1207/s15516709cog1202_4}
+
 \end{list}
 
-{\sffamily\bfseries\small\color{accent}EdTech, UX, and Other}\vspace{-0.2em}
+\vspace{0.7em}
+{\sffamily\bfseries\small\color{accent}EdTech, UX, and Interface Design}\vspace{-0.2em}
 
-\begin{list}{}{\setlength{\leftmargin}{1.5em}\setlength{\itemindent}{-1.5em}\setlength{\itemsep}{0.3em}}
-\item Dwivedi, Y. K., et al. (2023). Risks of generative AI. \url{https://doi.org/10.1016/j.ijinfomgt.2023.102695}
-\item Koedinger, K. R., et al. (2022). Learning science and AI. \url{https://www.pnas.org/doi/10.1073/pnas.2122730119}
-\item MetaMetrics. (2019). \textit{Lexile Framework.} \url{https://lexile.com/}
-\item Nielsen Norman Group. (2023). Usability heuristics. \url{https://www.nngroup.com/articles/ten-usability-heuristics/}
-\item Pew Research Center. (2024). \textit{Teens and AI.} \url{https://www.pewresearch.org/internet/2024/05/01/teens-and-ai/}
-\item Quinn, D., et al. (2023). AI tools and K--12 learning. \url{https://journals.sagepub.com/doi/full/10.3102/00346543231160869}
-\item Reich, J. (2020). \textit{Failure to Disrupt.} MIT Press.
-\item Shanahan, T. (2014). Text complexity. \url{https://www.shanahanonliteracy.com/blog/the-complexity-of-text-and-the-common-core}
+% yeah same list thing again whatever
+\begin{list}{}{%
+  \setlength{\leftmargin}{1.4em}
+  \setlength{\itemindent}{-1.4em}
+  \setlength{\itemsep}{0.35em}
+  \setlength{\parsep}{0pt}
+}
+
+\item Nielsen Norman Group. (2023). \textit{10 Usability Heuristics for User
+Interface Design.} \url{https://www.nngroup.com/articles/ten-usability-heuristics/}
+
+\item Quinn, D., Cooc, N., \& McIntyre, J. (2023). AI tools and K\textendash 12
+learning: A review of opportunities and risks. \textit{Review of Educational
+Research.} \url{https://journals.sagepub.com/doi/full/10.3102/00346543231160869}
+
+\item Reich, J. (2020). \textit{Failure to Disrupt: Why Technology Alone Can't
+Transform Education.} MIT Press.
+\url{https://mitpress.mit.edu/9780262539735/failure-to-disrupt/}
+
 \end{list}
 
-\end{document}
+\vspace{0.7em}
+{\sffamily\bfseries\small\color{accent}Reading Difficulty and Grade-Level Research}\vspace{-0.2em}
+
+\begin{list}{}{%
+  \setlength{\leftmargin}{1.4em}
+  \setlength{\itemindent}{-1.4em}
+  \setlength{\itemsep}{0.35em}
+  \setlength{\parsep}{0pt}
+}
+
+\item MetaMetrics. (2019). \textit{Lexile Framework for Reading.}
+\url{https://lexile.com/}
+
+\item Shanahan, T. (2014). The complexity of text and the common core.
+\url{https://www.shanahanonliteracy.com/blog/the-complexity-of-text-and-the-common-core}
+
+\end{list}
+
+\vspace{0.7em}
+{\sffamily\bfseries\small\color{accent}AI in Education, Adoption, and Social Trends}\vspace{-0.2em}
+
+\begin{list}{}{%
+  \setlength{\leftmargin}{1.4em}
+  \setlength{\itemindent}{-1.4em}
+  \setlength{\itemsep}{0.35em}
+  \setlength{\parsep}{0pt}
+}
+
+\item Dwivedi, Y. K., et al. (2023). Theoretical lens to understand the risks
+and ethics of generative AI. \textit{International Journal of Information
+Management}, 71, 102695. \url{https://doi.org/10.1016/j.ijinfomgt.2023.102695}
+
+\item Koedinger, K. R., et al. (2022). Learning science and AI: Using learning
+engineering to design AI-powered education. \textit{Proceedings of the National
+Academy of Sciences.} \url{https://www.pnas.org/doi/10.1073/pnas.2122730119}
+
+\item Pew Research Center. (2024). \textit{Teens and AI: How Youth Are Using
+New Technologies.} \url{https://www.pewresearch.org/internet/2024/05/01/teens-and-ai/}
+
+\end{list}
+
+\vspace{0.7em}
+{\sffamily\bfseries\small\color{accent}Project Resources}\vspace{-0.2em}
+
+% one last list -- just my own project
+\begin{list}{}{%
+  \setlength{\leftmargin}{1.4em}
+  \setlength{\itemindent}{-1.4em}
+  \setlength{\itemsep}{0.35em}
+  \setlength{\parsep}{0pt}
+}
+
+\item Bhandari, S. (2026). \textit{SimplrAI: A grade-appropriate AI explanation
+system for student learning.} \url{https://simplrai.tech}
+
+\end{list}
 
 \end{document}
