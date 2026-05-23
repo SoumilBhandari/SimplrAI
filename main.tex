@@ -149,8 +149,8 @@ model capability, is the rate-limiting factor for educational AI.
 Over the past two years, artificial intelligence has moved from a futuristic concept
 to a core academic tool. According to the Pew Research Center (2024), more than 63\%
 of American teenagers report using AI for schoolwork, and nearly one in five uses it
-daily. The tools they reach for \textemdash{} ChatGPT, Gemini, Perplexity \textemdash{}
-were built as general-purpose conversational agents, optimized for breadth, fluency,
+daily. The tools they reach for, mostly ChatGPT, Gemini, and Perplexity, were built
+as general-purpose conversational agents, optimized for breadth, fluency,
 and general reasoning. None were designed for the specific cognitive needs of a
 thirteen-year-old trying to understand the chain rule for the first time.
 
@@ -162,12 +162,12 @@ response written somewhere between a college textbook and an encyclopedia articl
 The student would skim it, decide they were ``still confused,'' and ask for it
 to be ``simpler.'' The next response would often be longer than the first.
 
-This is a design problem, not a capability problem. Frontier LLMs already have
-the underlying knowledge to teach high-school content; what they lack is a
-pedagogical scaffold \textemdash{} structured output, age-aware reading level,
-intentional hallucination control, and an interface that respects what cognitive
-scientists have known for forty years about working-memory limits (Sweller, 1988;
-Paas \& van Merri\"enboer, 2020).
+To me this looks like a design problem, not a capability problem. Frontier LLMs
+already have the underlying knowledge to teach high-school content; what they
+lack is the pedagogical scaffolding around it: structured output, age-aware
+reading level, intentional hallucination control, and an interface that respects
+what cognitive scientists have known for forty years about working-memory limits
+(Sweller, 1988; Paas \& van Merri\"enboer, 2020).
 
 This project asks a specific applied research question:
 \begin{quote}\itshape
@@ -193,21 +193,19 @@ frontier LLM (GPT-5 in the versions evaluated here) in three deliberate layers:
   links inline.
 \end{enumerate}
 
-The contribution of this paper is twofold. First, it documents the design choices
-and engineering tradeoffs behind a pedagogically motivated AI system. Second,
-and more importantly, it presents the results of a small but carefully controlled
-experiment evaluating whether those design choices translate into measurable
-learning gains. I compare SimplrAI to ChatGPT (a representative general-purpose
-tool) and to a textbook-only control across three subjects (Pre-Algebra, Biology,
-and U.S.\ History) and three educational levels (middle school, high school,
-and college).
+The paper has two main contributions. The first is documenting the design
+choices and engineering tradeoffs behind the system itself. The second, and
+the part I care more about, is showing whether those design choices actually
+translate into measurable learning gains. I compare SimplrAI to ChatGPT (a
+representative general-purpose tool) and to a textbook-only control across
+three subjects (Pre-Algebra, Biology, and U.S.\ History) and three educational
+levels (middle school, high school, and college).
 
-The remainder of this paper proceeds as follows. Section~2 surveys the relevant
-literature and identifies three gaps the present work addresses. Section~3
-describes the methodology, including the SimplrAI system architecture and study
-design. Section~4 presents the results. Section~5 discusses what the findings
-mean for the design of educational AI. Sections~6 and~7 cover limitations and
-conclude.
+The rest of the paper is organized as follows. Section~2 reviews the relevant
+literature and pulls out three gaps this work addresses. Section~3 covers the
+methodology, including the SimplrAI architecture and the study design.
+Section~4 presents the results. Section~5 discusses what they mean for the
+design of educational AI. Sections~6 and~7 cover limitations and conclude.
 
 % lit review time, this section took forever to write
 \section{Literature Review}
@@ -242,18 +240,17 @@ scaffolding that current chat interfaces do not provide.
 The classical framework here is cognitive load theory (Sweller, 1988), which
 holds that working memory can only process a limited amount of novel information
 at once. Explanations that are long, dense, or poorly organized increase what
-Sweller terms \emph{extraneous load} \textemdash{} cognitive effort that does
-not contribute to learning. Later refinements (Kalyuga, 2009; Paas \& van
+Sweller calls \emph{extraneous load}: cognitive effort that doesn't actually
+contribute to learning. Later refinements (Kalyuga, 2009; Paas \& van
 Merri\"enboer, 2020) emphasize that effective explanations are concise,
 sequenced, and chunked. Chi and Wylie's ICAP framework (2014) extends this with
 a taxonomy of learner engagement, finding that explanations which prompt active
 construction outperform passive ones.
 
-For an AI explanation system, the implication is direct: format matters. An
-explanation segmented into definition, worked example, analogy, and application
-is not merely tidier than a free-flowing paragraph \textemdash{} it is
-structurally easier to encode. SimplrAI's output schema is designed around
-precisely this finding.
+For an AI explanation system, the takeaway is direct: format matters. An
+explanation broken into definition, worked example, analogy, and application
+isn't just neater than a free-flowing paragraph; it's structurally easier to
+encode. SimplrAI's output schema is built around that finding.
 
 \subsection{Hallucination and factual reliability}
 
@@ -278,24 +275,24 @@ Lexile Framework (MetaMetrics, 2019) demonstrates that comprehension falls
 sharply when text exceeds a learner's threshold; Shanahan (2014) argues that
 academic content must be adapted to cognitive development stages, not merely
 simplified. Xu et al.\ (2023) show that LLMs default to college-level prose
-unless explicitly constrained \textemdash{} a finding I confirmed informally
-before this study and rigorously within it (see Section~4). On the interface
-side, Nielsen Norman Group (2023) finds that students learn best from interfaces
-with low visual noise and progressive disclosure. Reich (2020) and Quinn et al.\
-(2023) further argue that successful EdTech products (Khan Academy, Duolingo)
-succeed in part because they chunk content into small, predictable units
-\textemdash{} the opposite of the dense paragraphs ChatGPT and Perplexity
-tend to produce.
+unless explicitly constrained, which I confirmed informally before this study
+and more rigorously within it (see Section~4). On the interface side, Nielsen
+Norman Group (2023) finds that students learn best from interfaces with low
+visual noise and progressive disclosure. Reich (2020) and Quinn et al.\
+(2023) further argue that successful EdTech products like Khan Academy and
+Duolingo succeed in part because they chunk content into small, predictable
+units, which is basically the opposite of the dense paragraphs ChatGPT and
+Perplexity tend to produce.
 
 \subsection{Synthesis and identified gaps}
 
-Three gaps emerge across this literature. First, no widely-deployed AI system
+Three gaps come up across this literature. First, no widely-deployed AI system
 explicitly targets grade-appropriate explanation. Second, structured prompt
 templates have been evaluated for accuracy but rarely for student comprehension.
-Third, very few studies measure how the interface itself \textemdash{} independent
-of model quality \textemdash{} affects learning outcomes. SimplrAI is engineered
-to address all three, and the experiment described below is designed to test
-whether those engineering choices matter.
+Third, very few studies look at how the interface itself, independent of model
+quality, affects learning outcomes. SimplrAI is engineered to address all
+three, and the experiment described below is designed to test whether those
+engineering choices actually matter.
 
 %% methodology -- the technical part
 \section{Methodology}
