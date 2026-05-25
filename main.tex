@@ -104,7 +104,7 @@ Designing and Evaluating SimplrAI, a Grade-Appropriate\\
 AI Explanation System for Student Learning\par}
 
 \vspace{0.4em}
-{\sffamily\itshape\color{softgray}A three-arm randomized study across four schools in the United States and India.}
+{\sffamily\itshape\color{softgray}A three-arm randomized study across two schools in the USA and two schools in India.}
 
 \vspace{0.7em}
 {\color{accent}\rule{\linewidth}{1.0pt}}
@@ -346,15 +346,14 @@ a lower target grade level.
 
 \subsection{Participants}
 
-Ninety-eight students were recruited across four secondary schools and an
-online study-skills community. Two of the schools were located in the United
-States \textemdash{} BASIS Independent McLean in Virginia and a partner
-independent school in the greater Washington, DC area \textemdash{} and two
-were CBSE-affiliated schools in Mumbai and New Delhi, India. The cross-site
-design was intentional: AI study tools are used by students well beyond the
-American context that dominates the published literature, and a system designed
-for grade-appropriate explanation should be tested in at least two distinct
-educational settings.
+Ninety-eight students were recruited across two schools in the USA and two
+schools in India, along with an online study-skills community. The two U.S.\
+schools were BASIS Independent McLean in Virginia and a partner independent
+school in the greater Washington, DC area; the two Indian schools were
+CBSE-affiliated schools in Mumbai and New Delhi. I wanted students from more
+than one country in the sample because most of the published research on AI
+in schools focuses on U.S.\ students, and it seemed worth checking whether the
+system worked in a different curriculum too.
 
 After three participants withdrew before completing the post-test and eight
 were excluded for incomplete responses, the final sample was 87 (middle school
@@ -372,8 +371,8 @@ school.
 \subsection{Design}
 
 The study used a three-arm between-subjects design. Each participant was
-randomly assigned to one of three conditions \textemdash{} SimplrAI, ChatGPT
-(GPT-5, web interface), or a textbook-only control \textemdash{} using stratified
+randomly assigned to one of three conditions (SimplrAI, ChatGPT in its web
+interface running GPT-5, or a textbook-only control), using stratified
 randomization that balanced grade level across conditions. Subject was treated
 as a within-subject factor: each participant completed sessions in Pre-Algebra,
 Introductory Biology, and U.S.\ History, in a counterbalanced order. The full
@@ -395,16 +394,17 @@ design is shown in Figure~\ref{fig:design}.
 
 A session began with a 10-question pre-test on the day's subject, designed by
 certified subject teachers to assess conceptual understanding rather than recall.
-Sessions were administered in person at the four partner schools and remotely
-for participants recruited through the online study-skills community; all
-materials were delivered in English, the language of instruction at every
-participating school. Participants then had 20 minutes to study using only their
-assigned tool: in the SimplrAI and ChatGPT conditions they could ask any number
-of questions; in the control they were given the corresponding chapter from a
-standard OpenStax textbook. Participants then completed a 10-question post-test,
-drawn from the same item bank as the pre-test but non-overlapping, followed by
-a survey rating their study tool on five 7-point Likert items: \emph{clarity},
-\emph{accuracy}, \emph{helpfulness}, \emph{reading difficulty}, and \emph{trust}.
+Sessions were administered in person at all four partner schools (two in the
+USA, two in India) and remotely for participants recruited through the online
+study-skills community; all materials were delivered in English, the language
+of instruction at every participating school. Participants then had 20 minutes
+to study using only their assigned tool: in the SimplrAI and ChatGPT conditions
+they could ask any number of questions; in the control they were given the
+corresponding chapter from a standard OpenStax textbook. Participants then
+completed a 10-question post-test, drawn from the same item bank as the pre-test
+but non-overlapping, followed by a survey rating their study tool on five 7-point
+Likert items: \emph{clarity}, \emph{accuracy}, \emph{helpfulness},
+\emph{reading difficulty}, and \emph{trust}.
 
 \subsection{Materials and measures}
 
@@ -447,8 +447,8 @@ than both ChatGPT and Gemini 2.5 Pro (Gemini was included as a secondary
 comparison for the rating task only). Mean clarity ratings were 6.13 ($SD = 0.42$)
 for SimplrAI, 4.83 ($SD = 0.51$) for ChatGPT, and 4.94 ($SD = 0.49$) for Gemini
 on the 7-point scale. An independent-samples $t$-test comparing SimplrAI to
-ChatGPT yielded $t(85) = 12.41$, $p < .001$, with Cohen's $d = 1.42$ \textemdash{}
-a very large effect.
+ChatGPT yielded $t(85) = 12.41$, $p < .001$, with Cohen's $d = 1.42$, a very
+large effect.
 
 % clarity figure
 \begin{figure}[h]
@@ -470,11 +470,11 @@ students find it impenetrable.
 
 \subsection{Quiz performance}
 
-The most consequential outcome is whether SimplrAI actually improves
-comprehension, not just self-reported clarity. The three groups began with
-statistically equivalent pre-test scores ($F(2, 84) = 0.14$, $p = .87$). Mean
-improvement from pre-test to post-test was \textbf{+16.2 percentage points} in
-the SimplrAI condition, \textbf{+8.1 percentage points} for ChatGPT, and
+The bigger question is whether SimplrAI actually improves comprehension, not
+just self-reported clarity. The three groups started with statistically
+equivalent pre-test scores ($F(2, 84) = 0.14$, $p = .87$). Mean improvement
+from pre-test to post-test was \textbf{+16.2 percentage points} in the
+SimplrAI condition, \textbf{+8.1 percentage points} for ChatGPT, and
 \textbf{+3.6 percentage points} for the textbook-only control.
 
 \begin{figure}[h]
@@ -490,20 +490,19 @@ A one-way ANOVA on improvement scores was significant, $F(2, 84) = 22.3$,
 $p < .001$, $\eta^2 = 0.35$. Planned pairwise contrasts confirmed that SimplrAI
 outperformed both ChatGPT ($t(57) = 4.81$, $p < .001$, $d = 1.24$) and the
 control ($t(56) = 6.71$, $p < .001$, $d = 1.78$). ChatGPT also outperformed
-the control ($t(55) = 2.46$, $p = .017$, $d = 0.66$), indicating that even an
-unstructured general-purpose LLM produces some benefit over a textbook in a
-20-minute study session \textemdash{} but less than half the benefit of a system
-designed for instruction.
+the control ($t(55) = 2.46$, $p = .017$, $d = 0.66$), so even an unstructured
+general-purpose LLM produces some benefit over a textbook in a 20-minute study
+session, just less than half the benefit of a system designed for instruction.
 
 \subsection{Reading-level alignment}
 
 I measured the Flesch\textendash Kincaid grade level of every AI-generated
-explanation and compared it to the requested target. SimplrAI's outputs were
-tightly aligned with the requested grade: the mean absolute deviation was 0.6
-grade levels. ChatGPT, in contrast, exceeded the requested grade by an average
-of 3.8 grade levels and showed a strong floor effect \textemdash{} it could not
-reliably produce text below approximately an eighth-grade level even when
-explicitly asked to write for a sixth grader.
+explanation and compared it to the requested target. SimplrAI's outputs lined
+up closely with the requested grade: the mean absolute deviation was 0.6 grade
+levels. ChatGPT, by contrast, exceeded the requested grade by an average of
+3.8 grade levels and showed a strong floor effect: it couldn't reliably produce
+text below roughly an eighth-grade level even when explicitly asked to write
+for a sixth grader.
 
 % reading level figure -- this one was a pain to make in matplotlib
 \begin{figure}[h]
@@ -524,8 +523,8 @@ hallucination rate of 2.1 per 100 explanations. ChatGPT's outputs were judged
 fully accurate 91.2\% of the time, with a hallucination rate of 6.8 per 100
 explanations. The difference was statistically significant
 ($\chi^2(1) = 8.7$, $p = .003$) and represents a 3.2$\times$ reduction in
-hallucination \textemdash{} consistent with the prediction that retrieval
-grounding plus structured output reduce fabrication.
+hallucination, which is consistent with the prediction that retrieval grounding
+plus structured output reduce fabrication.
 
 \subsection{Trust and helpfulness}
 
@@ -555,21 +554,22 @@ quiz-score gains were +16.0 percentage points in the U.S.\ subsample and +16.4
 in the Indian subsample. ChatGPT performed equivalently across both groups as
 well.
 
-The null interaction is, of course, a weak form of evidence — failure to reject
+The null interaction is, of course, a weak form of evidence --- failure to reject
 the null is not the same as confirming equivalence, and the per-country
-subsamples ($n \approx 22$ per cell) are too small to rule out moderate
-moderation effects. But the consistency of the point estimates across countries
-is at least compatible with the interpretation that structured prompting and
-grade-level adaptation are not idiosyncratic to a single national curriculum.
+subsamples ($n \approx 14$ per cell) are too small to rule out moderate
+moderation effects. But the point estimates are basically identical across the
+two countries, which is at least consistent with the idea that structured
+prompting and grade-level adaptation aren't tied to one particular national
+curriculum.
 
 \subsection{Summary}
 
-Across every outcome measure \textemdash{} clarity, comprehension, reading-level
-alignment, factual accuracy, helpfulness, and trust \textemdash{} SimplrAI
-outperformed an off-the-shelf frontier LLM by margins ranging from moderate to
-very large. Effect sizes for the primary outcomes exceeded one standard
-deviation, which is considered very large in educational research, where typical
-interventions yield $d$ values of 0.2\textendash 0.5 (Hattie, 2008). Table~\ref{tab:summary}
+Across every outcome measure (clarity, comprehension, reading-level alignment,
+factual accuracy, helpfulness, and trust), SimplrAI outperformed an off-the-shelf
+frontier LLM by margins ranging from moderate to very large. Effect sizes for
+the primary outcomes exceeded one standard deviation, which is considered very
+large in educational research, where typical interventions yield $d$ values of
+0.2\textendash 0.5 (Hattie, 2008). Table~\ref{tab:summary}
 consolidates the headline statistics.
 
 % the summary table -- booktabs makes it look professional
