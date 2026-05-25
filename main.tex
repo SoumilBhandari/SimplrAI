@@ -601,21 +601,19 @@ Trust (1\textendash 7)               & \textbf{5.71} (0.59) & 4.62 (0.64) & \tex
 The results support the central hypothesis of this project: pedagogical
 structure, grade-level adaptation, and a deliberate interface produce learning
 gains that are large, robust across grade levels, and qualitatively different
-from those achieved by general-purpose LLMs. Three findings deserve particular
-attention.
+from those achieved by general-purpose LLMs. Three findings stand out.
 
 \subsection{Structure beats raw capability}
 
-The same underlying model \textemdash{} the current GPT-5 family, ranging from
-GPT-5.0 to GPT-5.5 over the study window \textemdash{} sits behind both SimplrAI
-and the ChatGPT condition. The two systems differ in their wrapper \textemdash{}
-the prompting schema, the retrieval grounding, the interface \textemdash{} not
-in the underlying model. The fact that one wrapper produced roughly twice the
-learning gain of another suggests that the bottleneck for educational AI in
-2026 is not model capability but pedagogical engineering. Frontier models
-already know enough to teach high-school content; what they lack is the design
-discipline that human teachers and textbook authors have spent decades
-developing.
+The same underlying model (the current GPT-5 family, ranging from GPT-5.0 to
+GPT-5.5 over the study window) sits behind both SimplrAI and the ChatGPT
+condition. The two systems differ in their wrapper: the prompting schema, the
+retrieval grounding, the interface. The underlying model is the same. The fact
+that one wrapper produced roughly twice the learning gain of another suggests
+that the bottleneck for educational AI in 2026 is not model capability but
+pedagogical engineering. Frontier models already know enough to teach
+high-school content; what they lack is the design discipline that human
+teachers and textbook authors have spent decades developing.
 
 \subsection{Reading-level mismatch is the silent failure mode}
 
@@ -625,28 +623,28 @@ explanation. Students do not always recognize this mismatch; they often report
 being ``bad at the subject'' when they are in fact being asked to read above
 their comprehension threshold. A 20-minute session with an explanation pitched
 even three grade levels too high produces measurable failure, as the modest
-quiz gains in the ChatGPT condition demonstrate. Reading-level alignment is
-therefore not a cosmetic feature \textemdash{} it is a precondition for the
-explanation being useful at all.
+quiz gains in the ChatGPT condition demonstrate. Reading-level alignment isn't
+a cosmetic feature, then. It's a precondition for the explanation being useful
+at all.
 
 \subsection{Hallucination is tractable in this context}
 
 The 3.2$\times$ reduction in hallucination achieved by combining lightweight
 retrieval grounding with a structured output schema is consistent with the
 broader literature (Lewis et al., 2020; Li et al., 2023). For educational AI
-specifically, the relevant knowledge base is well-bounded \textemdash{} the
-U.S.\ K\textendash 12 curriculum is a finite set of topics, and high-quality
+specifically, the relevant knowledge base is fairly well-bounded: the U.S.\
+K\textendash 12 curriculum is a finite set of topics, and high-quality
 open-licensed content exists for nearly all of it. A pedagogical AI system has
 far less excuse for hallucinating than a general-purpose one.
 
 \subsection{Boundary conditions and what the comparison condition actually measures}
 
-A careful reader should pause on the magnitude of the effect sizes reported
-here. Cohen's $d$ values above 1.0 are very large for educational research,
-and Hattie's (2008) benchmark of 0.2\textendash 0.5 for typical interventions
-makes the contrast vivid. But it also raises a question worth taking seriously:
-how much of the SimplrAI advantage reflects the upper bound of what structured
-educational AI can achieve, and how much reflects a ceiling on the comparison?
+It's worth pausing on the size of the effects reported here. Cohen's $d$ values
+above 1.0 are very large for educational research, and Hattie's (2008) benchmark
+of 0.2\textendash 0.5 for typical interventions makes the contrast pretty
+stark. That raises a question I want to take on directly: how much of the
+SimplrAI advantage reflects the upper bound of what structured educational AI
+can achieve, and how much is just a ceiling on the comparison condition?
 
 The ChatGPT condition in this study used the web interface with no custom
 system prompt, by students whose prompting skill varied substantially. This is
@@ -691,35 +689,35 @@ clarity.
 % gotta acknowledge the limitations or my mentor will yell at me
 \section{Limitations and Future Work}
 
-This study has several limitations that bound the strength of its conclusions.
-First, the sample size ($N = 87$) is modest. While the effect sizes observed
-are large enough to retain statistical significance, replication with a larger
-and more diverse sample would strengthen the inference. Second, participants
-were recruited through partner schools and online study-skills groups; these
-students may be more academically motivated than the general student population,
-which could bias the absolute magnitude of the gains. Third, the 20-minute
-study session captures only short-term comprehension; long-term retention,
-transfer, and the question of whether sustained use of AI tools affects learning
-outside of measured sessions are out of scope here.
+There are several limitations worth flagging. First, the sample size ($N = 87$)
+is modest. The effect sizes here are large enough to stay statistically
+significant, but a larger and more diverse sample would obviously make the
+inference stronger. Second, participants were recruited through partner schools
+and online study-skills groups, and those students are probably more
+academically motivated than the general student population, which could inflate
+the absolute size of the gains. Third, the 20-minute study session only
+captures short-term comprehension; long-term retention, transfer, and whether
+sustained AI use affects learning outside of measured sessions are out of scope
+here.
 
-Fourth, and most consequentially for how the results should be interpreted,
-the ChatGPT comparison condition reflects naive use of a general-purpose tool
-\textemdash{} the web interface, no system prompt, no scaffolding, by students
-of varying prompting skill. This is realistic but it is not a strong comparison
-in the inferential sense. A well-prompted ChatGPT, with a teacher- or
-researcher-authored system prompt approximating SimplrAI's definition\textendash
-example\textendash analogy\textendash application schema, would almost certainly
-narrow the gap substantially. The effect sizes reported in Section~4 should
-therefore be read as the gap between a purpose-built educational system and the
-typical way students actually use ChatGPT today, not as the gap between
-SimplrAI and the upper bound of what a frontier LLM can produce with skilled
-prompting. A prompt-engineered ChatGPT arm, and a comparison against
-purpose-built systems such as Khanmigo, are the two most important additions
-for a follow-up study.
+Fourth, and probably the most important one for how the results should be
+interpreted: the ChatGPT comparison condition reflects naive use of a
+general-purpose tool. The web interface, no system prompt, no scaffolding,
+used by students whose prompting skill varies a lot. This is realistic but
+it's not a strong comparison in the inferential sense. A well-prompted ChatGPT,
+with a teacher- or researcher-authored system prompt approximating SimplrAI's
+definition\textendash example\textendash analogy\textendash application schema,
+would almost certainly narrow the gap a lot. The effect sizes reported in
+Section~4 should therefore be read as the gap between a purpose-built
+educational system and the typical way students actually use ChatGPT today,
+not as the gap between SimplrAI and the upper bound of what a frontier LLM can
+produce with skilled prompting. A prompt-engineered ChatGPT arm, and a
+comparison against purpose-built systems such as Khanmigo, are the two most
+important additions for a follow-up study.
 
 Fifth, SimplrAI's retrieval corpus covers core K\textendash 14 academic
 subjects; performance on edge-case or rapidly evolving content was not measured.
-Sixth, the per-country subsamples ($n \approx 42$\textendash 46) are too small
+Sixth, the per-country subsamples ($n \approx 41$\textendash 46) are too small
 to detect anything but moderate-to-large country $\times$ condition interactions;
 the cross-site consistency reported in Section~4.6 is suggestive rather than
 definitive.
@@ -728,9 +726,9 @@ Future work should include longer longitudinal studies, broader subject coverage
 (advanced STEM, foreign languages, the arts), a prompt-engineered ChatGPT
 condition, comparison against other purpose-built educational AI systems such
 as Khanmigo, and a larger cross-cultural sample. A study with classroom teachers
-integrating SimplrAI into their lesson workflow \textemdash{} rather than
-students using it alone \textemdash{} would test the system in its likely
-real-world deployment context.
+integrating SimplrAI into their actual lesson workflow, rather than students
+using it alone, would test the system in its likely real-world deployment
+context.
 
 % ok wrapping it all up
 \section{Conclusion}
@@ -743,16 +741,16 @@ ChatGPT, clarity ratings more than a full point higher on a seven-point scale,
 factual accuracy five percentage points higher, and reading levels six times
 more closely aligned to the student's target grade. None of these gains came
 from a more capable underlying model; both systems used the same GPT-5 model
-on any given day. They came from how the model was wrapped \textemdash{} a
-structured prompt schema, retrieval grounding, grade-level adaptation, and an
-interface designed around progressive disclosure.
+on any given day. They came from how the model was wrapped: a structured prompt
+schema, retrieval grounding, grade-level adaptation, and an interface designed
+around progressive disclosure.
 
 The broader implication is that the most important work in educational AI may
 not be the next foundation model. It may be the much less glamorous work of
 designing systems that take what these models already know and present it the
-way good teachers do: clearly, in the right order, at the right level, with
-examples and analogies that meet the student where they are. SimplrAI is one
-small demonstration that this work is worth doing.
+way a good teacher would: clearly, at the right level, with examples that
+actually fit the student in front of you. SimplrAI is one small demonstration
+that this work is worth doing.
 
 
 % references section -- there are A LOT of these
