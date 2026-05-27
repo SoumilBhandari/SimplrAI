@@ -146,155 +146,284 @@ model capability, is the rate-limiting factor for educational AI.
 % ============= INTRO =================
 \section{Introduction}
 
-Over the past two years, artificial intelligence has moved from a futuristic concept
-to a core academic tool. According to the Pew Research Center (2024), more than 63\%
-of American teenagers report using AI for schoolwork, and nearly one in five uses it
-daily. The tools they reach for, mostly ChatGPT, Gemini, and Perplexity, were built
-as general-purpose conversational agents, optimized for breadth, fluency,
-and general reasoning. None were designed for the specific cognitive needs of a
-thirteen-year-old trying to understand the chain rule for the first time.
+In just over two years, AI chatbots have gone from a novelty to a normal part
+of how American teenagers do homework. A Pew Research Center survey of 1,391
+U.S.\ teens in late 2024 found that the share of 13- to 17-year-olds using
+ChatGPT for schoolwork doubled from 13\% to 26\% in a single year, with use
+highest among 11th and 12th graders (Sidoti, Park, \& Gottfried, 2025). The
+tools driving this---ChatGPT, Gemini, Copilot, Perplexity---were built as
+general-purpose chatbots. They were designed to be helpful across every topic
+a person could ask about. None of them were designed for what a thirteen-year-old
+actually needs when they meet the chain rule, the Krebs cycle, or the causes of
+the French Revolution for the first time.
 
-In my own coursework, and during the year I spent tutoring middle- and
-high-school students, I encountered the same pattern repeatedly. A student would
-ask a chatbot to explain mitosis, derivative notation, or the causes of the
-French Revolution. The model would produce a fluent, dense, six-paragraph
-response written somewhere between a college textbook and an encyclopedia article.
-The student would skim it, decide they were ``still confused,'' and ask for it
-to be ``simpler.'' The next response would often be longer than the first.
+That gap matters more than it might sound, because the same research that shows
+AI tutors can dramatically improve learning also shows that they can make
+learning worse. The difference between the two outcomes turns out to be almost
+entirely about how the system is built around the model, not about the model
+itself.
 
-To me this looks like a design problem, not a capability problem. Frontier LLMs
-already have the underlying knowledge to teach high-school content; what they
-lack is the pedagogical scaffolding around it: structured output, age-aware
-reading level, intentional hallucination control, and an interface that respects
-what cognitive scientists have known for forty years about working-memory limits
-(Sweller, 1988; Paas \& van Merri\"enboer, 2020).
+Two recent studies show this clearly. At Harvard, Kestin and colleagues (2025)
+ran a randomized trial where students using a carefully designed AI tutor
+learned more than twice as much, in less time, as students in a live in-class
+active-learning lesson on the same material. At about the same time, Bastani
+and colleagues (2025) ran a field experiment with nearly 1,000 Turkish high
+schoolers and got the opposite result for a plain ChatGPT-style interface: when
+the chatbot was taken away for an unassisted test, the students who had used
+it actually scored 17\% worse than students who had never used it at all. A
+version with safety prompts wiped out that harm. Same underlying model,
+opposite educational results.
 
-This project asks a specific applied research question:
+In my own classes and during the year I spent tutoring middle- and high-school
+students, I saw the everyday version of this gap constantly. A student asks a
+chatbot to explain mitosis or derivative notation. Out comes a fluent, dense,
+six-paragraph answer pitched somewhere between a college textbook and a
+Wikipedia article. The student skims it, decides they are ``still confused,''
+and asks for it to be ``simpler.'' The next answer is usually longer than the
+first.
+
+To me, this looks like a design problem, not a model problem. Frontier LLMs
+already know enough to teach high-school content. What they don't have is the
+teaching layer around the knowledge: a clear structure, an audience-aware
+reading level, ways to keep made-up information out, and an interface that
+respects what cognitive scientists have known for decades about how much new
+information a person can actually hold in their head at once.
+
+This project asks one specific question:
 \begin{quote}\itshape
-How can an AI-based academic explanation system be engineered to produce fast,
-accurate, and grade-appropriate explanations that reduce cognitive load and
-meaningfully improve student comprehension?
+How can an AI explanation tool be designed to give fast, accurate,
+grade-appropriate explanations that actually help students understand the
+material---instead of just sounding like they do?
 \end{quote}
 
-To answer it, I designed and built \textbf{SimplrAI}, an explanation system
-intended for students from sixth grade through the first years of college.
-SimplrAI is not a new model. It is an engineered pipeline that wraps an existing
-frontier LLM (GPT-5 in the versions evaluated here) in three deliberate layers:
+To try to answer it, I built \textbf{SimplrAI}, an explanation tool for students
+from sixth grade through the first years of college. SimplrAI is not a new AI
+model. It is a system built around an existing model (GPT-5 in the version
+tested here) in three deliberate layers:
 \begin{enumerate}[leftmargin=1.4em,itemsep=0.15em,topsep=0.2em]
-  \item A \textbf{structured prompting layer} that enforces a
-  definition\textendash example\textendash analogy\textendash application output
-  schema, constrains target reading level, and uses lightweight retrieval against
-  vetted curriculum sources to suppress hallucination.
-  \item A \textbf{grade-level adaptation layer} that classifies the requested
-  audience and rewrites both vocabulary and sentence complexity to match the
-  target Lexile band.
-  \item A \textbf{minimal user interface} that follows progressive-disclosure
-  principles, chunks explanations into expandable sections, and surfaces source
-  links inline.
+  \item A \textbf{structured prompting layer} that forces every explanation
+  into a fixed shape---definition, worked example, analogy, application---and
+  pulls from a small library of trusted curriculum sources to cut down on
+  made-up facts.
+  \item A \textbf{grade-level layer} that figures out who is asking and
+  rewrites the answer to fit that grade band's vocabulary and sentence
+  complexity.
+  \item A \textbf{simple interface} that breaks the answer into expandable
+  chunks so students see one piece at a time, with source links right next
+  to the relevant claim.
 \end{enumerate}
 
-The paper has two main contributions. The first is documenting the design
-choices and engineering tradeoffs behind the system itself. The second, and
-the part I care more about, is showing whether those design choices actually
-translate into measurable learning gains. I compare SimplrAI to ChatGPT (a
-representative general-purpose tool) and to a textbook-only control across
-three subjects (Pre-Algebra, Biology, and U.S.\ History) and three educational
-levels (middle school, high school, and college).
+The paper has two goals. First, to lay out the design choices and tradeoffs
+behind the system. Second, and more importantly, to test whether those choices
+actually help students learn. I compare SimplrAI against ChatGPT (as a
+representative general-purpose tool) and against a textbook-only control,
+across three subjects (Pre-Algebra, Biology, U.S.\ History) and three school
+levels (middle school, high school, early college).
 
-The rest of the paper is organized as follows. Section~2 reviews the relevant
-literature and pulls out three gaps this work addresses. Section~3 covers the
-methodology, including the SimplrAI architecture and the study design.
-Section~4 presents the results. Section~5 discusses what they mean for the
-design of educational AI. Sections~6 and~7 cover limitations and conclude.
+The rest of the paper is laid out as follows. Section~2 reviews the relevant
+research and pulls out the gaps SimplrAI is meant to fill. Section~3 covers
+the methodology---both the architecture and the study design. Section~4
+reports results. Section~5 discusses what they mean. Sections~6 and~7 cover
+limitations and conclude.
 
-% lit review time, this section took forever to write
 \section{Literature Review}
 
-The literature relevant to SimplrAI sits at the intersection of four fields:
-AI tutoring systems, cognitive load theory, hallucination and factual reliability
-in LLMs, and reading-level adaptation.
+The research that matters for SimplrAI clusters around three big ideas:
+(1)~what makes an AI tutor actually work, (2)~how to keep AI explanations
+accurate, and (3)~how to match an explanation to the reader sitting in front
+of it. These are usually treated as separate research areas, but they're
+really three sides of the same problem, and one finding ties all of them
+together: the model is not the product. How the system is engineered around
+the model is what decides whether students learn more, less, or worse.
 
-\subsection{AI tutoring systems}
+\subsection{What makes an AI tutor actually work}
 
-Intelligent tutoring systems have existed for decades, but the rise of LLMs has
-reopened the question of whether general-purpose conversational agents can serve
-as tutors. Koedinger et al.\ (2022) found that AI tutors can support conceptual
-understanding when their explanations are appropriately structured and scaffolded,
-and that the gains are largest for students who would otherwise have minimal
-access to one-on-one help. However, the same body of work consistently notes
-that commercially available chatbots are not designed for instruction. OpenAI's
-GPT-4 technical report (2023) and Anthropic's writing on Constitutional AI (2024)
-both describe their models as optimized for general helpfulness rather than for
-pedagogical clarity. Pew Research (2024) confirmed rapid adoption of these
-tools by students but warned that AI's educational usefulness is limited by
-inconsistent accuracy and a lack of transparent reasoning. Dwivedi et al.\ (2023)
-make the point more sharply, arguing that LLMs produce outputs that are
-syntactically fluent but epistemically unreliable when used for learning.
+The classic result behind all modern tutoring research is Bloom's (1984)
+``2 sigma problem.'' Across three controlled studies, Bloom found that
+students who got one-on-one tutoring outperformed about 98\% of students in
+regular classes. The challenge ever since has been figuring out how to scale
+that benefit beyond having a private human tutor for every student.
 
-The field therefore acknowledges both the promise of AI tutors and a clear gap:
-existing models are not built for instructional settings, and students need
-scaffolding that current chat interfaces do not provide.
+For about forty years, the main attempt to scale it has been intelligent
+tutoring systems (ITS): software that watches a student's work, gives
+feedback, and adjusts what comes next. In a 2025 systematic review of 28
+K\textendash 12 ITS studies covering 4,597 students, L\'etourneau and
+colleagues report that ITSs generally do help learning and performance, but
+with an important caveat: the gains shrink a lot when ITSs are compared
+against well-designed non-AI alternatives instead of against passive lectures.
+In other words, ITSs beat sitting and listening, but they don't always beat
+good teaching. Whether they help depends on whether the system has the right
+features---adaptive feedback, scaffolding, personalized pacing---actually
+built in.
 
-\subsection{Cognitive load theory}
+Large language models reopened all of this in a new way, and two recent
+randomized trials show how much the engineering matters.
 
-The classical framework here is cognitive load theory (Sweller, 1988), which
-holds that working memory can only process a limited amount of novel information
-at once. Explanations that are long, dense, or poorly organized increase what
-Sweller calls \emph{extraneous load}: cognitive effort that doesn't actually
-contribute to learning. Later refinements (Kalyuga, 2009; Paas \& van
-Merri\"enboer, 2020) emphasize that effective explanations are concise,
-sequenced, and chunked. Chi and Wylie's ICAP framework (2014) extends this with
-a taxonomy of learner engagement, finding that explanations which prompt active
-construction outperform passive ones.
+The first is Kestin and colleagues (2025) at Harvard, published in
+\textit{Scientific Reports}. They split 194 undergraduates in an intro physics
+class into two groups in a crossover design. Half learned a physics topic
+through an instructor-led active-learning class. Half learned the same topic
+through a custom GPT-4-powered tutor the team built, called PS2 Pal. The tutor
+wasn't just GPT-4 with a textbook attached---it was carefully prompted to
+follow seven specific teaching practices, including managing how much
+information it gave at once, walking the student through problems one part at
+a time, and never just handing over the answer. The result: students using the
+AI tutor learned significantly more, in less time, than students in the live
+class. Median learning gains were more than double, with effect sizes in the
+range of 0.73 to 1.3 standard deviations. The authors are direct about why it
+worked: AI chatbots are designed to be helpful, not to teach, and bridging
+that gap took deliberate, content-rich prompt engineering. To prevent the
+tutor from inventing wrong answers---a problem we'll come back to in the next
+section---they actually wrote out the full step-by-step solution to every
+problem ahead of time and fed it into the prompt.
 
-For an AI explanation system, the takeaway is direct: format matters. An
-explanation broken into definition, worked example, analogy, and application
-isn't just neater than a free-flowing paragraph; it's structurally easier to
-encode. SimplrAI's output schema is built around that finding.
+The second is Bastani and colleagues (2025), published in \textit{Proceedings
+of the National Academy of Sciences}. They ran a field experiment with nearly
+1,000 high school math students in Turkey, comparing three groups: a control
+with just a textbook, a ``GPT Base'' version that worked like plain ChatGPT,
+and a ``GPT Tutor'' version with prompts designed to protect learning. While
+students had the AI, both versions helped: GPT Base improved practice scores
+by 48\% and GPT Tutor by 127\% over the control. But when the AI was taken
+away for an unassisted exam, GPT Base students scored 17\% worse than students
+who had never had access at all. The plain chatbot had become a
+crutch---students leaned on it instead of actually learning. The version with
+safety prompts almost completely fixed this. The paper's title says it plainly:
+\textit{Generative AI Without Guardrails Can Harm Learning}.
 
-\subsection{Hallucination and factual reliability}
+A third study fills in the picture. Kumar and colleagues (2025) ran two
+pre-registered experiments with 1,818 U.S.\ adults solving math problems,
+comparing AI-generated explanations against just being shown the correct
+answer. AI explanations helped learning, especially when the learner tried
+the problem first. Even AI explanations that contained arithmetic errors led
+to more learning than just seeing the right answer---but less than correct
+explanations did. The takeaway from all three studies points the same
+direction: how the AI is set up---when it explains, what it explains, what
+it refuses to do---matters more than which model is underneath.
 
-A serious obstacle to AI in education is that LLMs sometimes generate confident
-but false statements. Maynez et al.\ (2020) document this rigorously in the
-summarization setting, showing that even strong models produce factual errors
-at non-trivial rates. OpenAI (2023) shows that prompting strategy substantially
-influences accuracy. Two mitigation approaches dominate the recent literature.
-The first is structured prompting (Li et al., 2023), which constrains the
-model's output format and reduces the space of plausible but incorrect
-completions. The second is retrieval-augmented generation (Lewis et al., 2020),
-in which the model is conditioned on retrieved source documents and is therefore
-less likely to fabricate. Both approaches have been studied in general settings;
-far less work evaluates them in pedagogical content generation specifically.
-SimplrAI combines lightweight retrieval from a vetted curriculum corpus with a
-strict output schema.
+\subsection{Keeping AI explanations honest}
 
-\subsection{Reading-level adaptation and interface design}
+If AI tutoring works only when the engineering is right, one of the most
+important pieces of that engineering is keeping the AI from confidently saying
+things that aren't true. The research term for this is hallucination, and Ji
+and colleagues (2023), in their large survey of the topic in \textit{ACM
+Computing Surveys}, describe the problem in a way that's especially worrying
+for education: hallucinated text sounds fluent and natural, and looks like
+it's grounded in real sources, even when it isn't. They distinguish two kinds.
+\emph{Intrinsic} hallucinations contradict the source the AI is supposed to be
+using. \emph{Extrinsic} hallucinations add information that the source doesn't
+mention and that nobody can verify from it. Both are dangerous for a student
+who, by definition, can't tell which parts of an explanation are right.
 
-A persistently overlooked variable in educational AI is reading level. The
-Lexile Framework (MetaMetrics, 2019) demonstrates that comprehension falls
-sharply when text exceeds a learner's threshold; Shanahan (2014) argues that
-academic content must be adapted to cognitive development stages, not merely
-simplified. Xu et al.\ (2023) show that LLMs default to college-level prose
-unless explicitly constrained, which I confirmed informally before this study
-and more rigorously within it (see Section~4). On the interface side, Nielsen
-Norman Group (2023) finds that students learn best from interfaces with low
-visual noise and progressive disclosure. Reich (2020) and Quinn et al.\
-(2023) further argue that successful EdTech products like Khan Academy and
-Duolingo succeed in part because they chunk content into small, predictable
-units, which is basically the opposite of the dense paragraphs ChatGPT and
-Perplexity tend to produce.
+This is also where the tutoring research from the previous section directly
+connects to a technical problem. Kestin's team didn't just hope GPT-4 would
+get the physics right---they wrote out the full solutions ahead of time and
+put them in the system prompt, so the model was working from a known-correct
+source instead of generating from scratch. That's an applied version of a
+research idea called \emph{retrieval-augmented generation} (RAG), introduced
+by Lewis and colleagues at NeurIPS 2020. RAG works by giving the model a
+search engine into a trusted document collection: when the model is about to
+answer, it first looks up relevant passages and then writes its answer based
+on them. Lewis et al.\ showed that this produces more specific, diverse, and
+factual language than letting the model rely only on what it memorized during
+training, and it has the bonus that the model can point to where its
+information came from.
 
-\subsection{Synthesis and identified gaps}
+A second technique that helps is structured prompting, especially the version
+called \emph{chain-of-thought prompting} introduced by Wei and colleagues at
+NeurIPS 2022. Instead of asking the model to jump straight to an answer, you
+show it a few examples of working through a problem step by step. Wei et al.\
+showed this substantially improves performance on arithmetic, commonsense, and
+symbolic reasoning---exactly the kinds of multi-step problems that fill
+K\textendash 12 STEM textbooks.
 
-Three gaps come up across this literature. First, no widely-deployed AI system
-explicitly targets grade-appropriate explanation. Second, structured prompt
-templates have been evaluated for accuracy but rarely for student comprehension.
-Third, very few studies look at how the interface itself, independent of model
-quality, affects learning outcomes. SimplrAI is engineered to address all
-three, and the experiment described below is designed to test whether those
-engineering choices actually matter.
+SimplrAI uses both ideas at a smaller scale: a small library of trusted
+curriculum sources for retrieval, and a strict output schema (definition
+$\to$ example $\to$ analogy $\to$ application) that constrains how the model
+can answer. Source links sit next to the answer so students can check claims,
+instead of having to take them on faith.
 
-%% methodology -- the technical part
+\subsection{Matching the explanation to the reader}
+
+Even an accurate explanation can fail if it's written in language the reader
+can't process. Two research areas converge on this point.
+
+The first is \emph{cognitive load theory}, which is basically the science of
+how much information a person can think about at once. Paas and van
+Merri\"enboer (2020), in \textit{Current Directions in Psychological Science},
+describe the goal of the field as engineering the instructional control of
+cognitive load---designing learning materials so that the limited capacity of
+working memory (about five to nine items, lasting roughly 20 seconds) gets
+spent on the actual learning rather than on figuring out the layout, hunting
+across the page, or untangling dense paragraphs. They highlight two effects
+that show up over and over. The \emph{split-attention effect} says students
+learn more from a single integrated source than from information scattered
+across multiple places they have to mentally stitch together. The
+\emph{worked-example effect} says novice learners get more out of studying a
+worked example than out of trying to solve an equivalent problem on their own,
+because problem-solving from scratch uses up working memory that should be
+going toward building understanding.
+
+The implication for an AI explanation tool is direct: the shape of the answer
+matters as much as the content. A six-paragraph wall of text forces the reader
+to juggle everything at once. An explanation broken into a definition, then a
+worked example, then an analogy, then an application gives the reader's
+working memory a chance to handle one piece at a time. That's why Kestin's
+team explicitly listed cognitive-load management as one of the seven teaching
+principles their tutor was designed around, and why the K\textendash 12 ITS
+review by L\'etourneau et al.\ (2025) keeps finding that adaptive scaffolding
+and immediate feedback are what separate effective tutors from ineffective
+ones.
+
+The second area is \emph{reading-level adaptation}, which gets even less
+attention in educational AI but is just as important. Agrawal and Carpuat
+(2023), at EMNLP, put the core insight simply: what makes a text easy to read
+depends on the intended reader. Their study of grade-specific text
+simplification shows that pre-trained language models can be controlled to
+produce text at a target grade level, but most existing approaches set that
+target for a whole corpus at once and ignore the difficulty of individual
+inputs. They show that predicting the right simplification on a case-by-case
+basis works much better---which matches what an AI tutor actually needs,
+since it might be answering a sixth-grader's question about mitosis one minute
+and a college sophomore's question about the same topic the next.
+
+This matters because frontier LLMs default to roughly college-level prose
+unless told otherwise. The sentences are long, the clauses are nested, and
+the vocabulary is well above what a typical middle-schooler can comfortably
+process. Without explicit instruction at the individual-question level, the
+``simpler'' rewrite a frustrated student asks for usually just trims a few
+words while keeping the same complex structure underneath.
+
+SimplrAI's grade-level layer is built directly on Agrawal and Carpuat's
+case-by-case approach: it classifies who's asking, conditions the generation
+on a target reading band, and checks the output against standard readability
+metrics before showing it to the student. Combined with the structured output
+from the cognitive-load side, the goal is for an explanation to be both the
+right amount of information and the right kind of language at the same time.
+
+\subsection{Where the gaps are}
+
+Three gaps come out of reading all of this together.
+
+First, no widely-used AI tool treats grade-appropriate explanation as a core
+feature. Reading-level work and tutoring work happen in different research
+communities and rarely talk to each other.
+
+Second, the work on structured prompting and retrieval has mostly been
+evaluated for accuracy and reasoning benchmarks, not for whether students
+actually understand the resulting explanations better.
+
+Third, the most striking results in the AI tutoring literature---Kestin's
+2$\times$ learning gains on one side, Bastani's 17\% learning loss on the
+other---both point the same direction: the difference between an AI that
+helps and an AI that hurts is engineering, not model quality. But the field
+still hasn't done the obvious follow-up study: hold the model fixed and
+change the engineering layer (structure, grade level, interface) to see how
+much each piece matters.
+
+SimplrAI is built to push on all three. The experiment in Section~3 is
+designed to test whether the engineering decisions actually make a measurable
+difference for student learning.
+
 \section{Methodology}
 
 \subsection{The SimplrAI system}
