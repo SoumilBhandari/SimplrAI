@@ -151,8 +151,8 @@ of how American teenagers do homework. A Pew Research Center survey of 1,391
 U.S.\ teens in late 2024 found that the share of 13- to 17-year-olds using
 ChatGPT for schoolwork doubled from 13\% to 26\% in a single year, with use
 highest among 11th and 12th graders (Sidoti, Park, \& Gottfried, 2025). The
-tools driving this---ChatGPT, Gemini, Copilot, Perplexity---were built as
-general-purpose chatbots. They were designed to be helpful across every topic
+tools driving this, like ChatGPT, Gemini, Copilot, and Perplexity, were built
+as general-purpose chatbots. They were designed to be helpful across every topic
 a person could ask about. None of them were designed for what a thirteen-year-old
 actually needs when they meet the chain rule, the Krebs cycle, or the causes of
 the French Revolution for the first time.
@@ -193,7 +193,7 @@ This project asks one specific question:
 \begin{quote}\itshape
 How can an AI explanation tool be designed to give fast, accurate,
 grade-appropriate explanations that actually help students understand the
-material---instead of just sounding like they do?
+material, not just sound like they do?
 \end{quote}
 
 To try to answer it, I built \textbf{SimplrAI}, an explanation tool for students
@@ -202,7 +202,7 @@ model. It is a system built around an existing model (GPT-5 in the version
 tested here) in three deliberate layers:
 \begin{enumerate}[leftmargin=1.4em,itemsep=0.15em,topsep=0.2em]
   \item A \textbf{structured prompting layer} that forces every explanation
-  into a fixed shape---definition, worked example, analogy, application---and
+  into a fixed shape (definition, worked example, analogy, application) and
   pulls from a small library of trusted curriculum sources to cut down on
   made-up facts.
   \item A \textbf{grade-level layer} that figures out who is asking and
@@ -222,7 +222,7 @@ levels (middle school, high school, early college).
 
 The rest of the paper is laid out as follows. Section~2 reviews the relevant
 research and pulls out the gaps SimplrAI is meant to fill. Section~3 covers
-the methodology---both the architecture and the study design. Section~4
+the methodology, both the architecture and the study design. Section~4
 reports results. Section~5 discusses what they mean. Sections~6 and~7 cover
 limitations and conclude.
 
@@ -251,9 +251,9 @@ K\textendash 12 ITS studies covering 4,597 students, L\'etourneau and
 colleagues report that ITSs generally do help learning and performance, but
 with an important caveat: the gains shrink a lot when ITSs are compared
 against well-designed non-AI alternatives instead of against passive lectures.
-In other words, ITSs beat sitting and listening, but they don't always beat
+Put another way, ITSs beat sitting and listening, but they don't always beat
 good teaching. Whether they help depends on whether the system has the right
-features---adaptive feedback, scaffolding, personalized pacing---actually
+features, like adaptive feedback, scaffolding, and personalized pacing, actually
 built in.
 
 Large language models reopened all of this in a new way, and two recent
@@ -264,7 +264,7 @@ The first is Kestin and colleagues (2025) at Harvard, published in
 class into two groups in a crossover design. Half learned a physics topic
 through an instructor-led active-learning class. Half learned the same topic
 through a custom GPT-4-powered tutor the team built, called PS2 Pal. The tutor
-wasn't just GPT-4 with a textbook attached---it was carefully prompted to
+wasn't just GPT-4 with a textbook attached. It was carefully prompted to
 follow seven specific teaching practices, including managing how much
 information it gave at once, walking the student through problems one part at
 a time, and never just handing over the answer. The result: students using the
@@ -273,8 +273,8 @@ class. Median learning gains were more than double, with effect sizes in the
 range of 0.73 to 1.3 standard deviations. The authors are direct about why it
 worked: AI chatbots are designed to be helpful, not to teach, and bridging
 that gap took deliberate, content-rich prompt engineering. To prevent the
-tutor from inventing wrong answers---a problem we'll come back to in the next
-section---they actually wrote out the full step-by-step solution to every
+tutor from inventing wrong answers (a problem I'll come back to in the next
+section), they actually wrote out the full step-by-step solution to every
 problem ahead of time and fed it into the prompt.
 
 The second is Bastani and colleagues (2025), published in \textit{Proceedings
@@ -286,7 +286,7 @@ students had the AI, both versions helped: GPT Base improved practice scores
 by 48\% and GPT Tutor by 127\% over the control. But when the AI was taken
 away for an unassisted exam, GPT Base students scored 17\% worse than students
 who had never had access at all. The plain chatbot had become a
-crutch---students leaned on it instead of actually learning. The version with
+crutch. Students leaned on it instead of actually learning. The version with
 safety prompts almost completely fixed this. The paper's title says it plainly:
 \textit{Generative AI Without Guardrails Can Harm Learning}.
 
@@ -295,10 +295,10 @@ pre-registered experiments with 1,818 U.S.\ adults solving math problems,
 comparing AI-generated explanations against just being shown the correct
 answer. AI explanations helped learning, especially when the learner tried
 the problem first. Even AI explanations that contained arithmetic errors led
-to more learning than just seeing the right answer---but less than correct
+to more learning than just seeing the right answer, though less than correct
 explanations did. The takeaway from all three studies points the same
-direction: how the AI is set up---when it explains, what it explains, what
-it refuses to do---matters more than which model is underneath.
+direction: how the AI is set up (when it explains, what it explains, what
+it refuses to do) matters more than which model is underneath.
 
 \subsection{Keeping AI explanations honest}
 
@@ -316,7 +316,7 @@ who, by definition, can't tell which parts of an explanation are right.
 
 This is also where the tutoring research from the previous section directly
 connects to a technical problem. Kestin's team didn't just hope GPT-4 would
-get the physics right---they wrote out the full solutions ahead of time and
+get the physics right. They wrote out the full solutions ahead of time and
 put them in the system prompt, so the model was working from a known-correct
 source instead of generating from scratch. That's an applied version of a
 research idea called \emph{retrieval-augmented generation} (RAG), introduced
@@ -333,7 +333,7 @@ called \emph{chain-of-thought prompting} introduced by Wei and colleagues at
 NeurIPS 2022. Instead of asking the model to jump straight to an answer, you
 show it a few examples of working through a problem step by step. Wei et al.\
 showed this substantially improves performance on arithmetic, commonsense, and
-symbolic reasoning---exactly the kinds of multi-step problems that fill
+symbolic reasoning, which is the kind of multi-step work that fills
 K\textendash 12 STEM textbooks.
 
 SimplrAI uses both ideas at a smaller scale: a small library of trusted
@@ -351,7 +351,7 @@ The first is \emph{cognitive load theory}, which is basically the science of
 how much information a person can think about at once. Paas and van
 Merri\"enboer (2020), in \textit{Current Directions in Psychological Science},
 describe the goal of the field as engineering the instructional control of
-cognitive load---designing learning materials so that the limited capacity of
+cognitive load, basically designing learning materials so that the limited capacity of
 working memory (about five to nine items, lasting roughly 20 seconds) gets
 spent on the actual learning rather than on figuring out the layout, hunting
 across the page, or untangling dense paragraphs. They highlight two effects
@@ -382,7 +382,7 @@ simplification shows that pre-trained language models can be controlled to
 produce text at a target grade level, but most existing approaches set that
 target for a whole corpus at once and ignore the difficulty of individual
 inputs. They show that predicting the right simplification on a case-by-case
-basis works much better---which matches what an AI tutor actually needs,
+basis works much better, which matches what an AI tutor actually needs,
 since it might be answering a sixth-grader's question about mitosis one minute
 and a college sophomore's question about the same topic the next.
 
@@ -412,9 +412,9 @@ Second, the work on structured prompting and retrieval has mostly been
 evaluated for accuracy and reasoning benchmarks, not for whether students
 actually understand the resulting explanations better.
 
-Third, the most striking results in the AI tutoring literature---Kestin's
-2$\times$ learning gains on one side, Bastani's 17\% learning loss on the
-other---both point the same direction: the difference between an AI that
+Third, the most striking results in the AI tutoring literature, Kestin's
+2$\times$ learning gains on one side and Bastani's 17\% learning loss on the
+other, both point the same direction: the difference between an AI that
 helps and an AI that hurts is engineering, not model quality. But the field
 still hasn't done the obvious follow-up study: hold the model fixed and
 change the engineering layer (structure, grade level, interface) to see how
@@ -683,7 +683,7 @@ quiz-score gains were +16.0 percentage points in the U.S.\ subsample and +16.4
 in the Indian subsample. ChatGPT performed equivalently across both groups as
 well.
 
-The null interaction is, of course, a weak form of evidence --- failure to reject
+The null interaction is a weak form of evidence on its own. Failure to reject
 the null is not the same as confirming equivalence, and the per-country
 subsamples ($n \approx 14$ per cell) are too small to rule out moderate
 moderation effects. But the point estimates are basically identical across the
@@ -712,13 +712,13 @@ Standard deviations in parentheses.}
 \toprule
 \textbf{Measure} & \textbf{SimplrAI} & \textbf{ChatGPT} & \textbf{Control} \\
 \midrule
-Clarity (1\textendash 7)             & \textbf{6.13} (0.42) & 4.83 (0.51) & \textemdash{} \\
+Clarity (1\textendash 7)             & \textbf{6.13} (0.42) & 4.83 (0.51) & --        \\
 Quiz improvement (pp)                & \textbf{+16.2} (4.3) & +8.1 (4.7)  & +3.6 (3.9) \\
-Reading-level deviation (grades)     & \textbf{0.6}         & 3.8         & \textemdash{} \\
-Fully-accurate explanations (\%)     & \textbf{96.4}        & 91.2        & \textemdash{} \\
-Hallucinations (per 100)             & \textbf{2.1}         & 6.8         & \textemdash{} \\
-Helpfulness (1\textendash 7)         & \textbf{6.18} (0.45) & 5.02 (0.58) & \textemdash{} \\
-Trust (1\textendash 7)               & \textbf{5.71} (0.59) & 4.62 (0.64) & \textemdash{} \\
+Reading-level deviation (grades)     & \textbf{0.6}         & 3.8         & --        \\
+Fully-accurate explanations (\%)     & \textbf{96.4}        & 91.2        & --        \\
+Hallucinations (per 100)             & \textbf{2.1}         & 6.8         & --        \\
+Helpfulness (1\textendash 7)         & \textbf{6.18} (0.45) & 5.02 (0.58) & --        \\
+Trust (1\textendash 7)               & \textbf{5.71} (0.59) & 4.62 (0.64) & --        \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -727,10 +727,10 @@ Trust (1\textendash 7)               & \textbf{5.71} (0.59) & 4.62 (0.64) & \tex
 % discussion section -- what does it all MEAN
 \section{Discussion}
 
-The results support the central hypothesis of this project: pedagogical
+The results back up the main idea behind this project: pedagogical
 structure, grade-level adaptation, and a deliberate interface produce learning
-gains that are large, robust across grade levels, and qualitatively different
-from those achieved by general-purpose LLMs. Three findings stand out.
+gains that are large, consistent across grade levels, and different in kind
+from what general-purpose LLMs produce. A few things are worth pulling out from this.
 
 \subsection{Structure beats raw capability}
 
@@ -746,7 +746,7 @@ teachers and textbook authors have spent decades developing.
 
 \subsection{Reading-level mismatch is the silent failure mode}
 
-Perhaps the most striking finding is the reading-level result: when asked for
+The most striking thing here is the reading-level result: when asked for
 a sixth-grade explanation, ChatGPT delivered something closer to a tenth-grade
 explanation. Students do not always recognize this mismatch; they often report
 being ``bad at the subject'' when they are in fact being asked to read above
@@ -768,10 +768,11 @@ far less excuse for hallucinating than a general-purpose one.
 
 \subsection{Boundary conditions and what the comparison condition actually measures}
 
-It's worth pausing on the size of the effects reported here. Cohen's $d$ values
-above 1.0 are very large for educational research, and Hattie's (2008) benchmark
-of 0.2\textendash 0.5 for typical interventions makes the contrast pretty
-stark. That raises a question I want to take on directly: how much of the
+The size of the effects reported here is unusual, and it's worth flagging that
+directly. Cohen's $d$ values
+above 1.0 are very large for educational research. Hattie's (2008) benchmark
+of 0.2\textendash 0.5 for typical interventions puts the gap into clear
+perspective. That raises a question I want to take on directly: how much of the
 SimplrAI advantage reflects the upper bound of what structured educational AI
 can achieve, and how much is just a ceiling on the comparison condition?
 
@@ -783,8 +784,8 @@ a well-prompted, well-scaffolded ChatGPT can do. A graduate student or a teacher
 who knows to write ``explain this to a seventh grader using a definition, an
 example, an analogy, and a real-world application, and keep it under 200 words''
 will get something much closer to a SimplrAI output. In that sense, this study
-measures the gap between a designed system and naive use of an undesigned one
-\textemdash{} not the gap between SimplrAI and the theoretical best a frontier
+measures the gap between a designed system and naive use of an undesigned one,
+not the gap between SimplrAI and the theoretical best a frontier
 LLM can produce. The real-world gap matters, because most students are naive
 users; but the inferential ceiling is lower than the headline effect sizes
 suggest.
@@ -807,8 +808,8 @@ from a structured prompt schema in this study exceeded what one would expect
 from a full model generation upgrade. Second, treat reading level as a hard
 constraint, not a soft preference. Third, build interfaces around chunked,
 progressive disclosure rather than a single block of text. The hardest part of
-using a chatbot for learning is not understanding the model \textemdash{} it
-is processing the wall of text the model returns. For schools and policymakers,
+using a chatbot for learning isn't understanding the model. It's
+processing the wall of text the model returns. For schools and policymakers,
 the findings suggest that the choice need not be between forbidding AI, ignoring
 it, or letting students use general-purpose tools. A fourth option exists:
 deploying AI systems that have been deliberately engineered for pedagogical
@@ -862,10 +863,10 @@ context.
 % ok wrapping it all up
 \section{Conclusion}
 
-This project set out to determine whether an AI explanation system engineered
+This project set out to figure out whether an AI explanation system built
 around pedagogical principles could deliver measurably better learning outcomes
-than the general-purpose chatbots students currently rely on. The answer, in
-this study, is yes. SimplrAI produced quiz-score gains roughly twice those of
+than the general-purpose chatbots students currently rely on. The short answer
+is yes. SimplrAI produced quiz-score gains roughly twice those of
 ChatGPT, clarity ratings more than a full point higher on a seven-point scale,
 factual accuracy five percentage points higher, and reading levels six times
 more closely aligned to the student's target grade. None of these gains came
